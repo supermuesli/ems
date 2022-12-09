@@ -1,0 +1,122 @@
+{
+    "00:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "01:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "02:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "03:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "04:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "05:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "06:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "07:00": {
+        "providerKWHs": {
+            "1": 1
+        }
+    },
+    "08:00": {
+        "providerKWHs": {
+            "1": 10
+        }
+    },
+    "09:00": {
+        "providerKWHs": {
+            "1": 25
+        }
+    },
+    "10:00": {
+        "providerKWHs": {
+            "1": 30
+        }
+    },
+    "11:00": {
+        "providerKWHs": {
+            "1": 60
+        }
+    },
+    "12:00": {
+        "providerKWHs": {
+            "1": 80
+        }
+    },
+    "13:00": {
+        "providerKWHs": {
+            "1": 100
+        }
+    },
+    "14:00": {
+        "providerKWHs": {
+            "1": 99
+        }
+    },
+    "15:00": {
+        "providerKWHs": {
+            "1": 80
+        }
+    },
+    "16:00": {
+        "providerKWHs": {
+            "1": 65
+        }
+    },
+    "17:00": {
+        "providerKWHs": {
+            "1": 40
+        }
+    },
+    "18:00": {
+        "providerKWHs": {
+            "1": 20
+        }
+    },
+    "19:00": {
+        "providerKWHs": {
+            "1": 5
+        }
+    },
+    "20:00": {
+        "providerKWHs": {
+            "1": 1
+        }
+    },
+    "21:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "22:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    },
+    "23:00": {
+        "providerKWHs": {
+            "1": 0
+        }
+    }
+}

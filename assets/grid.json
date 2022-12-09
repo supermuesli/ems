@@ -1,0 +1,131 @@
+{
+    "providers": [
+        {
+            "id": 1,
+            "displayName": "Solar 1",
+            "maxKWH": "100",
+            "coordX": 1,
+            "coordY": 1 
+        },
+        {
+            "id": 2,
+            "displayName": "Solar 2",
+            "maxKWH": "120",
+            "coordX": 2,
+            "coordY": 2 
+        },
+        {
+            "id": 3,
+            "displayName": "Wind 1",
+            "maxKWH": "200",
+            "coordX": 5,
+            "coordY": 3 
+        },
+        {
+            "id": 4,
+            "displayName": "Nuclear Fusion 1",
+            "maxKWH": "5000",
+            "coordX": 3,
+            "coordY": 15 
+        }
+    ],
+    "users": [
+        {
+            "id": 1,
+            "displayName": "Jan",
+            "maxKWH": 7,
+            "coordX": 2,
+            "coordY": 4
+        },
+        {
+            "id": 2,
+            "displayName": "Paul",
+            "maxKWH": 15,
+            "coordX": 9,
+            "coordY": 4
+        },
+        {
+            "id": 3,
+            "displayName": "Luisa",
+            "maxKWH": 6,
+            "coordX": 7,
+            "coordY": 6
+        },
+        {
+            "id": 4,
+            "displayName": "Ferit",
+            "maxKWH": 7,
+            "coordX": 8,
+            "coordY": 1
+        },
+        {
+            "id": 5,
+            "displayName": "Industrial 1",
+            "maxKWH": 100,
+            "coordX": 6,
+            "coordY": 6
+        },
+        {
+            "id": 6,
+            "displayName": "Industrial 2",
+            "maxKWH": 200,
+            "coordX": 13,
+            "coordY": 8
+        }
+    ],
+    "stores": [
+        {
+            "id": 1,
+            "displayName": "Store 1",
+            "maxKWH": 50,
+            "coordX": 7,
+            "coordY": 7
+        },
+        {
+            "id": 2,
+            "displayName": "Store 2",
+            "maxKWH": 75,
+            "coordX": 3,
+            "coordY": 9
+        },
+        {
+            "id": 3,
+            "displayName": "Store 3",
+            "maxKWH": 120,
+            "coordX": 9,
+            "coordY": 15
+        },
+        {
+            "id": 4,
+            "displayName": "Store 4",
+            "maxKWH": 100,
+            "coordX": 2,
+            "coordY": 6
+        }
+    ],
+    "p2xs": [
+        {
+            "id": 1,
+            "displayName": "Power to Heat 1",
+            "maxKWH": 20,
+            "coordX": 5,
+            "coordY": 9
+        },
+        {
+            "id": 2,
+            "displayName": "Power to Heat 2",
+            "maxKWH": 30,
+            "coordX": 7,
+            "coordY": 2
+        }
+    ],
+    "gridConnections": [
+        [[1, 1], [8, 4]],
+        [[4, 4], [4, 10]],
+        [[3, 9], [6, 9]],
+        [[4, 4], [13, 4]],
+        [[13, 4], [13, 8]],
+        [[4, 6], [7, 7]]
+    ],
+    "gridSize": 100
+}
