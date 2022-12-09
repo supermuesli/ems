@@ -3,139 +3,120 @@
         {
             "id": 1,
             "displayName": "Solar 1",
-            "desiredKWH": "100",
-            "coordX": 1,
-            "coordY": 1 
+            "coordX": 0,
+            "coordY": 0 
         },
         {
             "id": 2,
             "displayName": "Solar 2",
-            "desiredKWH": "120",
-            "coordX": 2,
-            "coordY": 2 
+            "coordX": 1,
+            "coordY": 1 
         },
         {
             "id": 3,
             "displayName": "Wind 1",
-            "desiredKWH": "200",
-            "coordX": 5,
-            "coordY": 3 
+            "coordX": 4,
+            "coordY": 2 
         },
         {
             "id": 4,
             "displayName": "Nuclear Fusion 1",
-            "desiredKWH": "5000",
-            "coordX": 3,
-            "coordY": 9 
+            "coordX": 2,
+            "coordY": 5 
         },
         {
             "id": 5,
             "displayName": "Nuclear Fusion 2",
-            "desiredKWH": "9000",
-            "coordX": 3,
-            "coordY": 9 
+            "coordX": 2,
+            "coordY": 5 
         }
     ],
     "users": [
         {
             "id": 1,
             "displayName": "Jan",
-            "desiredKWH": 7,
-            "coordX": 2,
-            "coordY": 4
+            "coordX": 1,
+            "coordY": 3
         },
         {
             "id": 2,
             "displayName": "Paul",
-            "desiredKWH": 15,
-            "coordX": 9,
-            "coordY": 4
+            "coordX": 7,
+            "coordY": 3
         },
         {
             "id": 3,
             "displayName": "Luisa",
-            "desiredKWH": 6,
-            "coordX": 7,
-            "coordY": 6
+            "coordX": 6,
+            "coordY": 4
         },
         {
             "id": 4,
             "displayName": "Ferit",
-            "desiredKWH": 7,
-            "coordX": 8,
-            "coordY": 1
+            "coordX": 7,
+            "coordY": 0
         },
         {
             "id": 5,
             "displayName": "Industrial 1",
-            "desiredKWH": 100,
-            "coordX": 6,
-            "coordY": 6
+            "coordX": 5,
+            "coordY": 4
         },
         {
             "id": 6,
             "displayName": "Industrial 2",
-            "desiredKWH": 200,
-            "coordX": 11,
-            "coordY": 5
+            "coordX": 8,
+            "coordY": 4
         }
     ],
     "stores": [
         {
             "id": 1,
             "displayName": "Store 1",
-            "desiredKWH": 50,
-            "coordX": 7,
-            "coordY": 7
+            "coordX": 6,
+            "coordY": 5
         },
         {
             "id": 2,
             "displayName": "Store 2",
-            "desiredKWH": 75,
-            "coordX": 3,
-            "coordY": 5
+            "coordX": 2,
+            "coordY": 4
         },
         {
             "id": 3,
             "displayName": "Store 3",
-            "desiredKWH": 120,
-            "coordX": 9,
-            "coordY": 7
+            "coordX": 8,
+            "coordY": 5
         },
         {
             "id": 4,
             "displayName": "Store 4",
-            "desiredKWH": 100,
-            "coordX": 2,
-            "coordY": 6
+            "coordX": 1,
+            "coordY": 5
         }
     ],
     "p2xs": [
         {
             "id": 1,
             "displayName": "Power to Heat 1",
-            "desiredKWH": 20,
-            "coordX": 5,
-            "coordY": 6
+            "coordX": 4,
+            "coordY": 5
         },
         {
             "id": 2,
             "displayName": "Power to Heat 2",
-            "desiredKWH": 30,
-            "coordX": 7,
-            "coordY": 2
+            "coordX": 6,
+            "coordY": 1
         }
     ],
     "gridCells": [
-        [[1, 1], [8, 1]],
-        [[7, 1], [7, 2]],
-        [[2, 2], [2, 4]],
-        [[2, 4], [2, 6]],
-        [[5, 3], [5, 6]],
-        [[5, 6], [11, 6]],
-        [[7, 6], [7, 7]],
-        [[9, 6], [9, 7]],
-        [[3, 6], [5, 6]]
+        [[0, 0], [7, 0]],
+        [[6, 0], [6, 1]],
+        [[0, 0], [0, 3]],
+        [[1, 3], [1, 5]],
+        [[4, 2], [4, 5]],
+        [[4, 5], [8, 5]],
+        [[2, 5], [4, 5]]
     ],
-    "cellSize": 150
+    "cellSize": 200
 }

@@ -1,7 +1,8 @@
 from pygame.math import Vector2
 
+
 class Grid:
-    def __init__(self, gridData: dict, gridSize: int = 20, timestepSize: int = 1):
+    def __init__(self, gridData: dict, scenario: dict, gridSize: int = 20, timestepSize: int = 1):
         self.cellSize = 100
         self.gridSize = gridSize
 
@@ -58,8 +59,7 @@ class Grid:
                         Provider(
                             id=p['id'],
                             coordX=p['coordX'],
-                            coordY=p['coordY'],
-                            desiredKWH=p['desiredKWH']
+                            coordY=p['coordY']
                         )
                     )
                     self.occupiedCells[p['coordX']][p['coordY']] = True
@@ -79,8 +79,7 @@ class Grid:
                         User(
                             id=u['id'],
                             coordX=u['coordX'],
-                            coordY=u['coordY'],
-                            desiredKWH=u['desiredKWH']
+                            coordY=u['coordY']
                         )
                     )
                     self.occupiedCells[u['coordX']][u['coordY']] = True
@@ -100,8 +99,7 @@ class Grid:
                         Store(
                             id=s['id'],
                             coordX=s['coordX'],
-                            coordY=s['coordY'],
-                            desiredKWH=s['desiredKWH']
+                            coordY=s['coordY']
                         )
                     )
                     self.occupiedCells[s['coordX']][s['coordY']] = True
@@ -121,45 +119,58 @@ class Grid:
                         Store(
                             id=p['id'],
                             coordX=p['coordX'],
-                            coordY=p['coordY'],
-                            desiredKWH=p['desiredKWH']
+                            coordY=p['coordY']
                         )
                     )
                     self.occupiedCells[p['coordX']][p['coordY']] = True
                     
+        # verify and load scenario
+        for hour in scenario:
+            for key in scenario[hour]:
+                if key == 'providerKWHs':
+                    for componentID in scenario[hour][key]:
+                        for p in self.providers:
+                            if p.id == componentID:
+                                p.desiredKWH = scenario[hour][key][componentID]
+
     def step(self):
         # compute optimal energy flow ->
         # map each component to the component it is going to use in the next timestep
 
         # check satisfiedness of each component in providers, users, stores, p2xs
-        print('step')
+        for p in self.providers:
+            for u in self.users:
+                for s in self.stores:
+                    for p2x in self.p2xs:
+                        # self.distribution[..] = ..
+                        pass
 
 
 class GridComponent:
-    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
+    def __init__(self, id: int, coordX: int, coordY: int):
         self.id: int = id
         self.coordX: int = coordX
         self.coordY: int = coordY
-        self.desiredKWH: int = desiredKWH
+        self.desiredKWH: int = 1
         self.currentKWH: int = 0
 
 
 class Provider(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
-        super().__init__(id, coordX, coordY, desiredKWH)
+    def __init__(self, id: int, coordX: int, coordY: int):
+        super().__init__(id, coordX, coordY)
 
 
 class User(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
-        super().__init__(id, coordX, coordY, desiredKWH)
+    def __init__(self, id: int, coordX: int, coordY: int):
+        super().__init__(id, coordX, coordY)
 
 
 class Store(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
-        super().__init__(id, coordX, coordY, desiredKWH)
+    def __init__(self, id: int, coordX: int, coordY: int):
+        super().__init__(id, coordX, coordY)
 
 
 class P2x(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
-        super().__init__(id, coordX, coordY, desiredKWH)
+    def __init__(self, id: int, coordX: int, coordY: int):
+        super().__init__(id, coordX, coordY)
 

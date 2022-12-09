@@ -97,7 +97,7 @@ def handleMouseClick(grid: Grid, event):
             grid.cells[x][y] = False
 
 
-def handleEvents(grid: Grid):
+def handleEvents(font, grid: Grid):
     for event in pygame.event.get():
             handleEscape(event)
             handleMouseClick(grid, event)
@@ -109,7 +109,7 @@ def handleEvents(grid: Grid):
                     paused = True
                     while paused:
                         for event in pygame.event.get():
-                            renderMousePosition(grid.cellSize)
+                            renderMousePosition(font, grid.cellSize)
                             handleEscape(event)
             
                             if event.type == pygame.KEYDOWN: 
@@ -154,7 +154,7 @@ def getGridColor(grid: Grid, x: int, y: int) -> tuple:
     return gray
 
 
-def renderGrid(grid: Grid):
+def renderGridCells(grid: Grid):
     for x in range(len(grid.cells)):
         for y in range(len(grid.cells[x])):
             if grid.cells[x][y]:
@@ -172,7 +172,8 @@ def renderGrid(grid: Grid):
                 )
 
 
-def renderGridComponents(grid: Grid, providerRects, userRects, storeRects, p2xRects):
+def renderGridComponents(grid: Grid, providerRects, userRects, storeRects, p2xRects, font):
+    # render icons
     for rect in providerRects:
         screen.blit(providerSprite, rect)
     
@@ -185,18 +186,41 @@ def renderGridComponents(grid: Grid, providerRects, userRects, storeRects, p2xRe
     for rect in p2xRects:
         screen.blit(p2xSprite, rect)
 
+    # render satisfiedness percent text
+    for p in grid.providers:
+        if grid.cells[p.coordX][p.coordY]:
+            percentText = font.render('%.1f' % (p.currentKWH/p.desiredKWH), True, getGridColor(grid, p.coordX, p.coordY))
+            renderX, renderY = getRenderPosition(grid.cellSize, p.coordX, p.coordY)
+            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
 
-def renderDisplayTime(displayTime):
-    font = pygame.font.SysFont(None, 64)
+    for u in grid.users:
+        if grid.cells[u.coordX][u.coordY]:
+            percentText = font.render('%.1f' % (u.currentKWH/u.desiredKWH), True, getGridColor(grid, u.coordX, u.coordY))
+            renderX, renderY = getRenderPosition(grid.cellSize, u.coordX, u.coordY)
+            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+
+    for s in grid.stores:
+        if grid.cells[s.coordX][s.coordY]:
+            percentText = font.render('%.1f' % (s.currentKWH/s.desiredKWH), True, getGridColor(grid, s.coordX, s.coordY))
+            renderX, renderY = getRenderPosition(grid.cellSize, s.coordX, s.coordY)
+            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+
+    for p in grid.p2xs:
+        if grid.cells[p.coordX][p.coordY]:
+            percentText = font.render('%.1f' % (p.currentKWH/p.desiredKWH), True, getGridColor(grid, p.coordX, p.coordY))
+            renderX, renderY = getRenderPosition(grid.cellSize, p.coordX, p.coordY)
+            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+
+
+def renderDisplayTime(font, displayTime):
     timeText = font.render(displayTime.strftime("%H:%M"), True, white)
     screen.blit(timeText, (windowWidth-200, 70))
 
 
-def renderMousePosition(cellSize: int):
+def renderMousePosition(font, cellSize: int):
     pos = pygame.mouse.get_pos()
     x, y = getGridPosition(cellSize, pos[0], pos[1])
 
-    font = pygame.font.SysFont(None, 64)
     timeText = font.render("x:%d | y:%d" % (x, y), True, white)
     screen.blit(timeText, (windowWidth-280, windowHeight-120))
 
@@ -208,6 +232,7 @@ def renderEnergyManagement(grid):
 
 def render(grid: Grid):
     pygame.init()
+    font = pygame.font.SysFont(None, 64)
     
     # get grid component rectangles
     providerRects, userRects, storeRects, p2xRects = getRenderRects(grid)
@@ -218,25 +243,25 @@ def render(grid: Grid):
     # render loop
     while True:
         # handle window events
-        handleEvents(grid=grid)
+        handleEvents(font, grid=grid)
 
         # clear canvas with black
         screen.fill(black)
 
         # buffer grid components
-        renderGridComponents(grid, providerRects, userRects, storeRects, p2xRects)
+        renderGridComponents(grid, providerRects, userRects, storeRects, p2xRects, font)
 
         # buffer energy management decisions
         renderEnergyManagement(grid)
 
         # buffer grid
-        renderGrid(grid)
+        renderGridCells(grid)
 
         # buffer display time
-        renderDisplayTime(displayTime)
+        renderDisplayTime(font, displayTime)
 
         # buffer mouse grid position
-        renderMousePosition(cellSize=grid.cellSize)
+        renderMousePosition(font, cellSize=grid.cellSize)
 
         # dump buffer (render)
         pygame.display.flip()
@@ -247,4 +272,6 @@ def render(grid: Grid):
             grid.step()
             displayTime += datetime.timedelta(minutes=15)
             startTime = time.time()
+
+        # TODO cap render to 30 or 60 fps
 

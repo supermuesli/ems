@@ -13,7 +13,15 @@ def main():
         print('could not open ' + filePath)
         os.exit(1)
 
-    g = Grid(gridData=gridData, gridSize=15)
+    filePath = 'assets/scenario.json'
+    try:
+        file = open(filePath, 'r')
+        scenario = json.load(file)
+    except:
+        print('could not open ' + filePath)
+        os.exit(1)
+
+    g = Grid(gridData=gridData, gridSize=15, scenario=scenario)
     render(grid=g)
 
 if __name__ == '__main__':
