@@ -71,15 +71,36 @@ def getRenderRects(grid: Grid):
     return providerRects, userRects, storeRects, p2xRects
 
 
+def handleEscape(event):
+    if event.type == pygame.QUIT: 
+        sys.exit()
+
+    # key press esc -> quit
+    if event.type == pygame.KEYDOWN: 
+        if event.key == pygame.K_ESCAPE:
+            sys.exit()
+
+
+def handleMouseClick(grid: Grid, event):
+    # mouse click -> add or remove grid cell (not persistent)
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        # left click -> add cell
+        if event.button == 1:
+            pos = pygame.mouse.get_pos()
+            x, y = getGridPosition(grid.gridSize, pos[0], pos[1])
+            grid.cells[x][y] = True
+
+        # right click -> remove cell
+        if event.button == 3:
+            pos = pygame.mouse.get_pos()
+            x, y = getGridPosition(grid.gridSize, pos[0], pos[1])
+            grid.cells[x][y] = False
+
+
 def handleEvents(grid: Grid):
     for event in pygame.event.get():
-            if event.type == pygame.QUIT: 
-                sys.exit()
-
-            # key press esc -> quit
-            if event.type == pygame.KEYDOWN: 
-                if event.key == pygame.K_ESCAPE:
-                    sys.exit()
+            handleEscape(event)
+            handleMouseClick(grid, event)
 
             # key press space -> pause
             if event.type == pygame.KEYDOWN: 
@@ -88,31 +109,13 @@ def handleEvents(grid: Grid):
                     paused = True
                     while paused:
                         for event in pygame.event.get():
-                            if event.type == pygame.QUIT: 
-                                sys.exit()
-
-                            if event.type == pygame.KEYDOWN: 
-                                if event.key == pygame.K_ESCAPE:
-                                    sys.exit()
-
+                            renderMousePosition(grid.gridSize)
+                            handleEscape(event)
+            
                             if event.type == pygame.KEYDOWN: 
                                 if event.key == pygame.K_SPACE:
                                     print('Resume')
                                     paused = False
-            
-            # mouse click -> add or remove grid cell (not persistent)
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # left click -> add cell
-                if event.button == 1:
-                    pos = pygame.mouse.get_pos()
-                    x, y = getGridPosition(grid.gridSize, pos[0], pos[1])
-                    grid.cells[x][y] = True
-
-                # right click -> remove cell
-                if event.button == 3:
-                    pos = pygame.mouse.get_pos()
-                    x, y = getGridPosition(grid.gridSize, pos[0], pos[1])
-                    grid.cells[x][y] = False
 
 
 def getRenderPosition(gridSize: int, x: int, y: int) -> (int, int):
