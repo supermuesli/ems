@@ -33,7 +33,7 @@ def getRenderRects(grid: Grid):
         providerRects.append(
             (
                 providerSprite.get_rect().move(
-                    p.coordX, p.coordY
+                    getRenderPosition(grid.gridSize, p.coordX, p.coordY)
                 )
             )
         )
@@ -43,7 +43,7 @@ def getRenderRects(grid: Grid):
         userRects.append(
             (
                 userSprite.get_rect().move(
-                    u.coordX, u.coordY
+                    getRenderPosition(grid.gridSize, u.coordX, u.coordY)
                 )
             )
         )
@@ -53,7 +53,7 @@ def getRenderRects(grid: Grid):
         storeRects.append(
             (
                 storeSprite.get_rect().move(
-                    s.coordX, s.coordY
+                    getRenderPosition(grid.gridSize, s.coordX, s.coordY)
                 )
             )
         )
@@ -63,7 +63,7 @@ def getRenderRects(grid: Grid):
         p2xRects.append(
             (
                 p2xSprite.get_rect().move(
-                    p.coordX, p.coordY
+                    getRenderPosition(grid.gridSize, p.coordX, p.coordY)
                 )
             )
         )
@@ -71,7 +71,7 @@ def getRenderRects(grid: Grid):
     return providerRects, userRects, storeRects, p2xRects
 
 
-def handleEvents():
+def handleEvents(gridSize: int):
     for event in pygame.event.get():
             if event.type == pygame.QUIT: 
                 sys.exit()
@@ -99,6 +99,26 @@ def handleEvents():
                                 if event.key == pygame.K_SPACE:
                                     print('Resume')
                                     paused = False
+            
+            # mouse click -> add or remove grid cell (not persistent)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # left click -> add cell
+                if event.button == 1:
+                    pos = pygame.mouse.get_pos()
+                    x, y = getGridPosition(gridSize, pos[0], pos[1])
+
+                # right click -> remove cell
+                if event.button == 3:
+                    pos = pygame.mouse.get_pos()
+                    x, y = getGridPosition(gridSize, pos[0], pos[1])
+
+
+def getRenderPosition(gridSize: int, x: int, y: int) -> (int, int):
+    return x*gridSize, y*gridSize
+
+
+def getGridPosition(gridSize: int, x: float, y: float) -> (int, int):
+    return round(x/gridSize - 0.5), round(y/gridSize - 0.5)
 
 
 def getGridColor(grid: Grid, x: int, y: int) -> tuple:
@@ -132,14 +152,15 @@ def getGridColor(grid: Grid, x: int, y: int) -> tuple:
 def renderGrid(grid: Grid):
     for c in grid.connections:
         # c[0] src   c[1] trg
-        for x in range(round(c[0].x), round(c[1].x)+grid.gridSize, grid.gridSize):
-            for y in range(round(c[0].y), round(c[1].y)+grid.gridSize, grid.gridSize):
+        for x in range(round(c[0].x), round(c[1].x)+1):
+            for y in range(round(c[0].y), round(c[1].y)+1):
+                renderX, renderY = getRenderPosition(grid.gridSize, x, y)
                 pygame.draw.rect(
                     screen, 
                     getGridColor(grid, x, y), 
                     pygame.Rect(
-                        x, 
-                        y,
+                        renderX, 
+                        renderY,
                         grid.gridSize, 
                         grid.gridSize
                     ),
@@ -167,6 +188,15 @@ def renderDisplayTime(displayTime):
     screen.blit(timeText, (windowWidth-200, 70))
 
 
+def renderMousePosition(gridSize: int):
+    pos = pygame.mouse.get_pos()
+    x, y = getGridPosition(gridSize, pos[0], pos[1])
+
+    font = pygame.font.SysFont(None, 64)
+    timeText = font.render("x:%d | y:%d" % (x, y), True, white)
+    screen.blit(timeText, (windowWidth-280, windowHeight-120))
+
+
 def renderEnergyManagement(grid, providerRects, userRects, storeRects, p2xRects):
     # TODO
     pass
@@ -184,7 +214,7 @@ def render(grid: Grid):
     # render loop
     while True:
         # handle window events
-        handleEvents()
+        handleEvents(gridSize=grid.gridSize)
 
         # clear canvas with black
         screen.fill(black)
@@ -200,6 +230,9 @@ def render(grid: Grid):
 
         # buffer display time
         renderDisplayTime(displayTime)
+
+        # buffer mouse grid position
+        renderMousePosition(gridSize=grid.gridSize)
 
         # dump buffer (render)
         pygame.display.flip()

@@ -18,8 +18,8 @@ class Grid:
                 for c in cs:
                     self.connections.append(
                         (
-                            Vector2(round(c[0][0]*gridSize), round(c[0][1]*gridSize)), 
-                            Vector2(round(c[1][0]*gridSize), round(c[1][1]*gridSize))
+                            Vector2(round(c[0][0]), round(c[0][1])), 
+                            Vector2(round(c[1][0]), round(c[1][1]))
                         )
                     )
 
@@ -29,8 +29,8 @@ class Grid:
                     self.providers.append(
                         Provider(
                             id=p['id'],
-                            coordX=p['coordX']*gridSize,
-                            coordY=p['coordY']*gridSize,
+                            coordX=p['coordX'],
+                            coordY=p['coordY'],
                             maxKWH=p['maxKWH']
                         )
                     )
@@ -41,8 +41,8 @@ class Grid:
                     self.users.append(
                         User(
                             id=u['id'],
-                            coordX=u['coordX']*gridSize,
-                            coordY=u['coordY']*gridSize,
+                            coordX=u['coordX'],
+                            coordY=u['coordY'],
                             maxKWH=u['maxKWH']
                         )
                     )
@@ -53,8 +53,8 @@ class Grid:
                     self.stores.append(
                         Store(
                             id=s['id'],
-                            coordX=s['coordX']*gridSize,
-                            coordY=s['coordY']*gridSize,
+                            coordX=s['coordX'],
+                            coordY=s['coordY'],
                             maxKWH=s['maxKWH']
                         )
                     )
@@ -65,8 +65,8 @@ class Grid:
                     self.p2xs.append(
                         Store(
                             id=p['id'],
-                            coordX=p['coordX']*gridSize,
-                            coordY=p['coordY']*gridSize,
+                            coordX=p['coordX'],
+                            coordY=p['coordY'],
                             maxKWH=p['maxKWH']
                         )
                     )
