@@ -13,7 +13,7 @@ def main():
         print('could not open ' + filePath)
         os.exit(1)
 
-    g = Grid(gridData=gridData, gridSize=gridData['gridSize'])
+    g = Grid(gridData=gridData, gridSize=15)
     render(grid=g)
 
 if __name__ == '__main__':

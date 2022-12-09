@@ -26,7 +26,14 @@
             "displayName": "Nuclear Fusion 1",
             "desiredKWH": "5000",
             "coordX": 3,
-            "coordY": 15 
+            "coordY": 9 
+        },
+        {
+            "id": 5,
+            "displayName": "Nuclear Fusion 2",
+            "desiredKWH": "9000",
+            "coordX": 3,
+            "coordY": 9 
         }
     ],
     "users": [
@@ -69,8 +76,8 @@
             "id": 6,
             "displayName": "Industrial 2",
             "desiredKWH": 200,
-            "coordX": 13,
-            "coordY": 8
+            "coordX": 11,
+            "coordY": 5
         }
     ],
     "stores": [
@@ -86,14 +93,14 @@
             "displayName": "Store 2",
             "desiredKWH": 75,
             "coordX": 3,
-            "coordY": 9
+            "coordY": 5
         },
         {
             "id": 3,
             "displayName": "Store 3",
             "desiredKWH": 120,
             "coordX": 9,
-            "coordY": 15
+            "coordY": 7
         },
         {
             "id": 4,
@@ -109,7 +116,7 @@
             "displayName": "Power to Heat 1",
             "desiredKWH": 20,
             "coordX": 5,
-            "coordY": 9
+            "coordY": 6
         },
         {
             "id": 2,
@@ -120,12 +127,15 @@
         }
     ],
     "gridCells": [
-        [[1, 1], [8, 4]],
-        [[4, 4], [4, 10]],
-        [[3, 9], [6, 9]],
-        [[4, 4], [13, 4]],
-        [[13, 4], [13, 8]],
-        [[4, 6], [7, 7]]
+        [[1, 1], [8, 1]],
+        [[7, 1], [7, 2]],
+        [[2, 2], [2, 4]],
+        [[2, 4], [2, 6]],
+        [[5, 3], [5, 6]],
+        [[5, 6], [11, 6]],
+        [[7, 6], [7, 7]],
+        [[9, 6], [9, 7]],
+        [[3, 6], [5, 6]]
     ],
-    "gridSize": 100
+    "cellSize": 150
 }
