@@ -9,15 +9,16 @@ epsilon = 1**(-8)
 
 # window context
 windowSize = windowWidth, windowHeight = 1600, 1200
-borderWidthPx = 10
+borderWidth = 5
 screen = pygame.display.set_mode(windowSize)
 
 # colors
 black = (0, 0, 0)
 white = (255, 255, 255)
+gray = (100, 100, 100)
 red = (255, 0, 0, 255)
-yellow = (255, 255, 0, 255)
-green = (0, 255, 0, 255)
+yellow = (255, 255, 0)
+green = (0, 255, 0)
 
 # sprites
 providerSprite = pygame.image.load("assets/images/provider.png")
@@ -125,7 +126,7 @@ def getGridColor(grid: Grid, x: int, y: int) -> tuple:
             if True:    
                 return red
 
-    return (0, 0, 0, 255)
+    return gray
 
 
 def renderGrid(grid: Grid):
@@ -142,7 +143,7 @@ def renderGrid(grid: Grid):
                         grid.gridSize, 
                         grid.gridSize
                     ),
-                    borderWidthPx
+                    borderWidth
                 )
 
 
@@ -162,7 +163,7 @@ def renderGridComponents(grid: Grid, providerRects, userRects, storeRects, p2xRe
 
 def renderDisplayTime(displayTime):
     font = pygame.font.SysFont(None, 64)
-    timeText = font.render(displayTime.strftime("%H:%M"), True, black)
+    timeText = font.render(displayTime.strftime("%H:%M"), True, white)
     screen.blit(timeText, (windowWidth-200, 70))
 
 
@@ -186,7 +187,7 @@ def render(grid: Grid):
         handleEvents()
 
         # clear canvas with black
-        screen.fill(white)
+        screen.fill(black)
 
         # buffer grid components
         renderGridComponents(grid, providerRects, userRects, storeRects, p2xRects)
