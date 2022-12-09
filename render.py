@@ -71,7 +71,7 @@ def getRenderRects(grid: Grid):
     return providerRects, userRects, storeRects, p2xRects
 
 
-def handleEvents(gridSize: int):
+def handleEvents(grid: Grid):
     for event in pygame.event.get():
             if event.type == pygame.QUIT: 
                 sys.exit()
@@ -105,12 +105,14 @@ def handleEvents(gridSize: int):
                 # left click -> add cell
                 if event.button == 1:
                     pos = pygame.mouse.get_pos()
-                    x, y = getGridPosition(gridSize, pos[0], pos[1])
+                    x, y = getGridPosition(grid.gridSize, pos[0], pos[1])
+                    grid.cells[x][y] = True
 
                 # right click -> remove cell
                 if event.button == 3:
                     pos = pygame.mouse.get_pos()
-                    x, y = getGridPosition(gridSize, pos[0], pos[1])
+                    x, y = getGridPosition(grid.gridSize, pos[0], pos[1])
+                    grid.cells[x][y] = False
 
 
 def getRenderPosition(gridSize: int, x: int, y: int) -> (int, int):
@@ -150,10 +152,9 @@ def getGridColor(grid: Grid, x: int, y: int) -> tuple:
 
 
 def renderGrid(grid: Grid):
-    for c in grid.connections:
-        # c[0] src   c[1] trg
-        for x in range(round(c[0].x), round(c[1].x)+1):
-            for y in range(round(c[0].y), round(c[1].y)+1):
+    for x in range(len(grid.cells)):
+        for y in range(len(grid.cells[x])):
+            if grid.cells[x][y]:
                 renderX, renderY = getRenderPosition(grid.gridSize, x, y)
                 pygame.draw.rect(
                     screen, 
@@ -197,7 +198,7 @@ def renderMousePosition(gridSize: int):
     screen.blit(timeText, (windowWidth-280, windowHeight-120))
 
 
-def renderEnergyManagement(grid, providerRects, userRects, storeRects, p2xRects):
+def renderEnergyManagement(grid):
     # TODO
     pass
 
@@ -214,7 +215,7 @@ def render(grid: Grid):
     # render loop
     while True:
         # handle window events
-        handleEvents(gridSize=grid.gridSize)
+        handleEvents(grid=grid)
 
         # clear canvas with black
         screen.fill(black)
@@ -223,7 +224,7 @@ def render(grid: Grid):
         renderGridComponents(grid, providerRects, userRects, storeRects, p2xRects)
 
         # buffer energy management decisions
-        renderEnergyManagement(grid, providerRects, userRects, storeRects, p2xRects)
+        renderEnergyManagement(grid)
 
         # buffer grid
         renderGrid(grid)
@@ -237,7 +238,7 @@ def render(grid: Grid):
         # dump buffer (render)
         pygame.display.flip()
 
-        # evaluate timestep and make the next step if needed
+        # execute next grid decision if timestep is over
         endTime = time.time()
         if endTime - startTime > grid.timestepSize:
             grid.step()

@@ -5,7 +5,10 @@ class Grid:
         self.gridSize = gridSize
         self.timestepSize = timestepSize # timestepSize in seconds corresponds to 15 elapsed simulation minutes
 
-        self.connections = []
+        self.cells = []
+        for i in range(gridSize):
+            self.cells.append([False for j in range(gridSize)])
+
         self.providers = []
         self.users = []
         self.stores = []
@@ -13,15 +16,12 @@ class Grid:
 
         # load gridData
         for key in gridData:
-            if key == 'gridConnections':
-                cs = gridData[key]
-                for c in cs:
-                    self.connections.append(
-                        (
-                            Vector2(round(c[0][0]), round(c[0][1])), 
-                            Vector2(round(c[1][0]), round(c[1][1]))
-                        )
-                    )
+            if key == 'gridCells':
+                gcs = gridData[key]
+                for gc in gcs:
+                    for x in range(round(gc[0][0]), round(gc[1][0])+1):
+                        for y in range(round(gc[0][1]), round(gc[1][1])+1):
+                            self.cells[x][y] = True
 
             if key == 'providers':
                 ps = gridData[key]
@@ -31,7 +31,7 @@ class Grid:
                             id=p['id'],
                             coordX=p['coordX'],
                             coordY=p['coordY'],
-                            maxKWH=p['maxKWH']
+                            desiredKWH=p['desiredKWH']
                         )
                     )
 
@@ -43,7 +43,7 @@ class Grid:
                             id=u['id'],
                             coordX=u['coordX'],
                             coordY=u['coordY'],
-                            maxKWH=u['maxKWH']
+                            desiredKWH=u['desiredKWH']
                         )
                     )
 
@@ -55,7 +55,7 @@ class Grid:
                             id=s['id'],
                             coordX=s['coordX'],
                             coordY=s['coordY'],
-                            maxKWH=s['maxKWH']
+                            desiredKWH=s['desiredKWH']
                         )
                     )
 
@@ -67,39 +67,41 @@ class Grid:
                             id=p['id'],
                             coordX=p['coordX'],
                             coordY=p['coordY'],
-                            maxKWH=p['maxKWH']
+                            desiredKWH=p['desiredKWH']
                         )
                     )
                 
 
     def step(self):
-        # compute optimal energy flow in the next timestep
+        # compute optimal energy flow ->
+        # map each component to the component it is going to use in the next timestep
         print('step')
 
 class GridComponent:
-    def __init__(self, id: int, coordX: int, coordY: int, maxKWH: int):
+    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
         self.id: int = id
         self.coordX: int = coordX
         self.coordY: int = coordY
-        self.maxKWH: int = maxKWH
+        self.desiredKWH: int = desiredKWH
 
 
 class Provider(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, maxKWH: int):
-        super().__init__(id, coordX, coordY, maxKWH)
+    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
+        super().__init__(id, coordX, coordY, desiredKWH)
 
 
 class User(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, maxKWH: int):
-        super().__init__(id, coordX, coordY, maxKWH)
+    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
+        super().__init__(id, coordX, coordY, desiredKWH)
 
 
 class Store(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, maxKWH: int):
-        super().__init__(id, coordX, coordY, maxKWH)
+    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
+        super().__init__(id, coordX, coordY, desiredKWH)
 
 
 class P2x(GridComponent):
-    def __init__(self, id: int, coordX: int, coordY: int, maxKWH: int):
-        super().__init__(id, coordX, coordY, maxKWH)
+    def __init__(self, id: int, coordX: int, coordY: int, desiredKWH: int):
+        super().__init__(id, coordX, coordY, desiredKWH)
+
 
