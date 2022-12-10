@@ -3,37 +3,37 @@
         {
             "id": "provider_1",
             "displayName": "Solar 1",
-            "maxKWH": 120,
             "coordX": 0,
-            "coordY": 0 
+            "coordY": 0,
+            "maxKWH": 120
         },
         {
             "id": "provider_2",
             "displayName": "Solar 2",
-            "maxKWH": 120,
             "coordX": 1,
-            "coordY": 1 
+            "coordY": 1,
+            "maxKWH": 120
         },
         {
             "id": "provider_3",
             "displayName": "Wind 1",
-            "maxKWH": 100,
             "coordX": 4,
-            "coordY": 2 
+            "coordY": 2,
+            "maxKWH": 100
         },
         {
             "id": "provider_4",
             "displayName": "Nuclear Fusion 1",
-            "maxKWH": 200,
             "coordX": 2,
-            "coordY": 5 
+            "coordY": 5,
+            "maxKWH": 200
         },
         {
             "id": "provider_5",
             "displayName": "Nuclear Fusion 2",
-            "maxKWH": 200,
             "coordX": 2,
-            "coordY": 5 
+            "coordY": 5,
+            "maxKWH": 200
         }
     ],
     "users": [

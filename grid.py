@@ -245,7 +245,7 @@ class Grid:
                                 if p.currentKWH + self.scenario[currentTime][key][componentID] < p.maxKWH:
                                     p.currentKWH += self.scenario[currentTime][key][componentID]
                                 else:
-                                    p.currentKWH = self.scenario[currentTime][key][componentID]
+                                    p.currentKWH = p.maxKWH
 
                 if key == 'userKWHs':
                     for componentID in self.scenario[currentTime][key]:
