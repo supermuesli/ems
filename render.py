@@ -23,7 +23,7 @@ green = (0, 255, 0)
 # sprites
 providerSprite = pygame.image.load("assets/images/provider.png")
 userSprite = pygame.image.load("assets/images/user.png")
-storeSprite = pygame.image.load("assets/images/store.png")
+storageSprite = pygame.image.load("assets/images/storage.png")
 p2xSprite = pygame.image.load("assets/images/p2x.png")
 
 
@@ -48,11 +48,11 @@ def getRenderRects(grid: Grid):
             )
         )
 
-    storeRects = []
-    for s in grid.stores:
-        storeRects.append(
+    storageRects = []
+    for s in grid.storages:
+        storageRects.append(
             (
-                storeSprite.get_rect().move(
+                storageSprite.get_rect().move(
                     getRenderPosition(grid.cellSize, s.coordX, s.coordY)
                 )
             )
@@ -68,7 +68,7 @@ def getRenderRects(grid: Grid):
             )
         )
     
-    return providerRects, userRects, storeRects, p2xRects
+    return providerRects, userRects, storageRects, p2xRects
 
 
 def handleEscape(event):
@@ -105,50 +105,67 @@ def handleEvents(font, grid: Grid):
             # key press space -> pause
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_SPACE:
-                    print('Pause')
+                    # render pause text                
+                    pauseText = font.render('Paused', True, white)
+                    screen.blit(pauseText, (windowWidth-200, 150))
+                    pygame.display.flip()
+                    
                     paused = True
                     while paused:
                         for event in pygame.event.get():
-                            renderMousePosition(font, grid.cellSize)
                             handleEscape(event)
             
                             if event.type == pygame.KEYDOWN: 
                                 if event.key == pygame.K_SPACE:
-                                    print('Resume')
                                     paused = False
 
 
+# converts a cell position on the grid to a position on the canvas
 def getRenderPosition(cellSize: int, x: int, y: int) -> (int, int):
     return x*cellSize, y*cellSize
 
 
+# converts a position on the canvas to cell position on the grid
 def getGridPosition(cellSize: int, x: float, y: float) -> (int, int):
     return round(x/cellSize - 0.5), round(y/cellSize - 0.5)
 
 
+# get grid color based on satisfaction of component that resides on the given coordiantes
 def getGridColor(grid: Grid, x: int, y: int) -> tuple:
     for p in grid.providers:
         if p.coordX == x and p.coordY == y:
-            # get grid color based on satisfiedness of component that resides on the given coordiantes
-            if True:    
+            if p.getSatisfaction()/100 > 2/3:    
                 return green
+            if 2/3 > p.getSatisfaction()/100 > 1/3:    
+                return yellow
+            if 1/3 > p.getSatisfaction()/100:    
+                return red
 
     for u in grid.users:
         if u.coordX == x and u.coordY == y:
-            # get grid color based on satisfiedness of component that resides on the given coordiantes
-            if True:    
+            if u.getSatisfaction()/100 > 2/3:    
                 return green
-
-    for s in grid.stores:
-        if s.coordX == x and s.coordY == y:
-            # get grid color based on satisfiedness of component that resides on the given coordiantes
-            if True:    
+            if 2/3 > u.getSatisfaction()/100 > 1/3:    
                 return yellow
+            if 1/3 > u.getSatisfaction()/100:    
+                return red
+
+    for s in grid.storages:
+        if s.coordX == x and s.coordY == y:
+            if s.getSatisfaction()/100 > 2/3:    
+                return green
+            if 2/3 > s.getSatisfaction()/100 > 1/3:    
+                return yellow
+            if 1/3 > s.getSatisfaction()/100:    
+                return red
 
     for p in grid.p2xs:
         if p.coordX == x and p.coordY == y:
-            # get grid color based on satisfiedness of component that resides on the given coordiantes
-            if True:    
+            if p.getSatisfaction()/100 > 2/3:    
+                return green
+            if 2/3 > p.getSatisfaction()/100 > 1/3:    
+                return yellow
+            if 1/3 > p.getSatisfaction()/100:    
                 return red
 
     return gray
@@ -172,7 +189,7 @@ def renderGridCells(grid: Grid):
                 )
 
 
-def renderGridComponents(grid: Grid, providerRects, userRects, storeRects, p2xRects, font):
+def renderGridComponents(grid: Grid, providerRects, userRects, storageRects, p2xRects, font):
     # render icons
     for rect in providerRects:
         screen.blit(providerSprite, rect)
@@ -180,36 +197,36 @@ def renderGridComponents(grid: Grid, providerRects, userRects, storeRects, p2xRe
     for rect in userRects:
         screen.blit(userSprite, rect)
     
-    for rect in storeRects:
-        screen.blit(storeSprite, rect)
+    for rect in storageRects:
+        screen.blit(storageSprite, rect)
     
     for rect in p2xRects:
         screen.blit(p2xSprite, rect)
 
-    # render satisfiedness percent text
+    # render satisfaction percent text
     for p in grid.providers:
         if grid.cells[p.coordX][p.coordY]:
-            percentText = font.render('%.1f' % (p.currentKWH/p.desiredKWH), True, getGridColor(grid, p.coordX, p.coordY))
+            percentText = font.render('%d%%' % p.getSatisfaction(), True, getGridColor(grid, p.coordX, p.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, p.coordX, p.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
 
     for u in grid.users:
         if grid.cells[u.coordX][u.coordY]:
-            percentText = font.render('%.1f' % (u.currentKWH/u.desiredKWH), True, getGridColor(grid, u.coordX, u.coordY))
+            percentText = font.render('%d%%' % u.getSatisfaction(), True, getGridColor(grid, u.coordX, u.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, u.coordX, u.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
 
-    for s in grid.stores:
+    for s in grid.storages:
         if grid.cells[s.coordX][s.coordY]:
-            percentText = font.render('%.1f' % (s.currentKWH/s.desiredKWH), True, getGridColor(grid, s.coordX, s.coordY))
+            percentText = font.render('%d%%' % s.getSatisfaction(), True, getGridColor(grid, s.coordX, s.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, s.coordX, s.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
 
     for p in grid.p2xs:
         if grid.cells[p.coordX][p.coordY]:
-            percentText = font.render('%.1f' % (p.currentKWH/p.desiredKWH), True, getGridColor(grid, p.coordX, p.coordY))
+            percentText = font.render('%d%%' % p.getSatisfaction(), True, getGridColor(grid, p.coordX, p.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, p.coordX, p.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/3, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
 
 
 def renderDisplayTime(font, displayTime):
@@ -235,11 +252,10 @@ def render(grid: Grid):
     font = pygame.font.SysFont(None, 64)
     
     # get grid component rectangles
-    providerRects, userRects, storeRects, p2xRects = getRenderRects(grid)
+    providerRects, userRects, storageRects, p2xRects = getRenderRects(grid)
 
     startTime = time.time()
-    displayTime = datetime.datetime(year=1, month=1, day=1, hour=0)
-
+    
     # render loop
     while True:
         # handle window events
@@ -249,7 +265,7 @@ def render(grid: Grid):
         screen.fill(black)
 
         # buffer grid components
-        renderGridComponents(grid, providerRects, userRects, storeRects, p2xRects, font)
+        renderGridComponents(grid, providerRects, userRects, storageRects, p2xRects, font)
 
         # buffer energy management decisions
         renderEnergyManagement(grid)
@@ -258,7 +274,7 @@ def render(grid: Grid):
         renderGridCells(grid)
 
         # buffer display time
-        renderDisplayTime(font, displayTime)
+        renderDisplayTime(font, grid.displayTime)
 
         # buffer mouse grid position
         renderMousePosition(font, cellSize=grid.cellSize)
@@ -270,7 +286,6 @@ def render(grid: Grid):
         endTime = time.time()
         if endTime - startTime > grid.timestepSize:
             grid.step()
-            displayTime += datetime.timedelta(minutes=15)
             startTime = time.time()
 
         # TODO cap render to 30 or 60 fps
