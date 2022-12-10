@@ -74,7 +74,7 @@ class P2x(GridComponent):
         
 
 class Grid:
-    def __init__(self, gridData: dict, scenario: dict, gridSize: int = 20, timestepSize: int = 1):
+    def __init__(self, gridData: dict, scenario: dict, gridSize: int = 20, timestepSize: float = 1):
         # mock simulation data of each component in the grid
         self.scenario = scenario
 

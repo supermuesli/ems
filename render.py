@@ -72,14 +72,9 @@ def getRenderRects(grid: Grid):
     return providerRects, userRects, storageRects, p2xRects
 
 
-def handleEscape(event):
+def handleWindowClose(event):
     if event.type == pygame.QUIT: 
         sys.exit()
-
-    # key press esc -> quit
-    if event.type == pygame.KEYDOWN: 
-        if event.key == pygame.K_ESCAPE:
-            sys.exit()
 
 
 def handleMouseClick(grid: Grid, event):
@@ -98,27 +93,48 @@ def handleMouseClick(grid: Grid, event):
             grid.cells[x][y] = False
 
 
+def handleKeyPress(font, grid: Grid, event):
+    if event.type == pygame.KEYDOWN: 
+        # key press esc -> quit
+        if event.key == pygame.K_ESCAPE:
+            sys.exit()
+
+        # key press up -> increase tickrate
+        if event.key == pygame.K_UP:
+            if grid.timestepSize * 0.9 >= 1**(-8):
+                grid.timestepSize = 1**(-8)
+            else:
+                grid.timestepSize *= 0.9
+
+        # key press down -> decrease tickrate
+        if event.key == pygame.K_DOWN:
+            if grid.timestepSize * 1.1 <= 2:
+                grid.timestepSize *= 1.1
+            else:
+                grid.timestepSize = 2
+
+        # key press space -> pause
+        if event.key == pygame.K_SPACE:
+            # render pause text                
+            pauseText = font.render('Paused', True, white)
+            screen.blit(pauseText, (windowWidth-200, 150))
+            pygame.display.flip()
+            
+            paused = True
+            while paused:
+                for event in pygame.event.get():
+                    handleWindowClose(event)
+    
+                    if event.type == pygame.KEYDOWN: 
+                        if event.key == pygame.K_SPACE:
+                            paused = False
+
+
 def handleEvents(font, grid: Grid):
     for event in pygame.event.get():
-            handleEscape(event)
-            handleMouseClick(grid, event)
-
-            # key press space -> pause
-            if event.type == pygame.KEYDOWN: 
-                if event.key == pygame.K_SPACE:
-                    # render pause text                
-                    pauseText = font.render('Paused', True, white)
-                    screen.blit(pauseText, (windowWidth-200, 150))
-                    pygame.display.flip()
-                    
-                    paused = True
-                    while paused:
-                        for event in pygame.event.get():
-                            handleEscape(event)
-            
-                            if event.type == pygame.KEYDOWN: 
-                                if event.key == pygame.K_SPACE:
-                                    paused = False
+        handleWindowClose(event)
+        handleMouseClick(grid, event)
+        handleKeyPress(font, grid, event)
 
 
 # converts a cell position on the grid to a position on the canvas
