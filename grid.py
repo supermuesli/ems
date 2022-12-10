@@ -275,14 +275,18 @@ class Grid:
         #   the more energy is lost in the form of heat
 
         self.resetDistribution()
-        for u in self.users:
-            if not self.cells[u.coordX][u.coordY]:
-                continue
+        self.updateScenario()
 
-            for p in self.providers:
-                if not self.cells[p.coordX][p.coordY]:
-                    continue
+
+        # who get's to consume from provider?
+        for p in self.providers:
+            if not self.cells[p.coordX][p.coordY]:
+                continue
             
+            for u in self.users:
+                if not self.cells[u.coordX][u.coordY]:
+                    continue
+
                 # compute energy consumption
                 if p.currentKWH > 0 and u.currentKWH < u.desiredKWH:
                     neededKWH = u.desiredKWH - u.currentKWH
@@ -293,33 +297,10 @@ class Grid:
                     else:
                         u.currentKWH += neededKWH
 
-                # keep track of component dependency
-                if p.id_ not in self.distribution[u.id_]:
-                    self.distribution[u.id_].append(p.id_)
+                    # keep track of component dependency
+                    if p.id_ not in self.distribution[u.id_]:
+                        self.distribution[u.id_].append(p.id_)
 
-            for s in self.storages:
-                if not self.cells[s.coordX][s.coordY]:
-                    continue
-            
-                # compute energy consumption
-                if s.currentKWH > 0 and u.currentKWH < u.desiredKWH:
-                    neededKWH = u.desiredKWH - u.currentKWH
-                    s.currentKWH -= neededKWH
-                    if s.currentKWH < 0:
-                        u.currentKWH -= s.currentKWH
-                        s.currentKWH = 0
-                    else:
-                        u.currentKWH += neededKWH
-
-                # keep track of component dependency
-                if s.id_ not in self.distribution[u.id_]:
-                    self.distribution[u.id_].append(s.id_)
-                
-
-        for p in self.providers:
-            if not self.cells[p.coordX][p.coordY]:
-                continue
-            
             for s in self.storages:
                 if not self.cells[s.coordX][s.coordY]:
                     continue
@@ -334,10 +315,10 @@ class Grid:
                     else:
                         s.currentKWH += neededKWH
 
-                # keep track of component dependency
-                if p.id_ not in self.distribution[s.id_]:
-                    self.distribution[s.id_].append(p.id_)
-
+                    # keep track of component dependency
+                    if p.id_ not in self.distribution[s.id_]:
+                        self.distribution[s.id_].append(p.id_)
+            
             for p2x in self.p2xs:
                 if not self.cells[p2x.coordX][p2x.coordY]:
                     continue
@@ -352,12 +333,52 @@ class Grid:
                     else:
                         p2x.currentKWH += neededKWH
 
-                # keep track of component dependency
-                if p.id_ not in self.distribution[p2x.id_]:
-                    self.distribution[p2x.id_].append(p.id_)
+                    # keep track of component dependency
+                    if p.id_ not in self.distribution[p2x.id_]:
+                        self.distribution[p2x.id_].append(p.id_)
+                
+        # who gets to consume from storages?
+        for s in self.storages:
+            if not self.cells[s.coordX][s.coordY]:
+                continue
+        
+            for u in self.users:
+                if not self.cells[u.coordX][u.coordY]:
+                    continue
+
+                # compute energy consumption
+                if s.currentKWH > 0 and u.currentKWH < u.desiredKWH:
+                    neededKWH = u.desiredKWH - u.currentKWH
+                    s.currentKWH -= neededKWH
+                    if s.currentKWH < 0:
+                        u.currentKWH -= s.currentKWH
+                        s.currentKWH = 0
+                    else:
+                        u.currentKWH += neededKWH
+
+                    # keep track of component dependency
+                    if s.id_ not in self.distribution[u.id_]:
+                        self.distribution[u.id_].append(s.id_)
+
+            for p2x in self.p2xs:
+                if not self.cells[p2x.coordX][p2x.coordY]:
+                    continue
+            
+                # compute energy consumption
+                if s.currentKWH > 0 and p2x.currentKWH < p2x.desiredKWH:
+                    neededKWH = p2x.desiredKWH - p2x.currentKWH
+                    s.currentKWH -= neededKWH
+                    if s.currentKWH < 0:
+                        p2x.currentKWH -= s.currentKWH
+                        s.currentKWH = 0
+                    else:
+                        p2x.currentKWH += neededKWH
+
+                    # keep track of component dependency
+                    if s.id_ not in self.distribution[p2x.id_]:
+                        self.distribution[p2x.id_].append(s.id_)
 
         self.simulationDayTime += datetime.timedelta(minutes=15)
-        self.updateScenario()
 
 
     def getComponentAt(self, x: int, y: int) -> GridComponent:
