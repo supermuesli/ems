@@ -89,8 +89,13 @@ class Grid:
         # keep track of simulation day time
         self.simulationDayTime = datetime.datetime(year=1, month=1, day=1, hour=0)
         
-        # if equilibrium (in percent) is 100, it means that every component in the grid is perfectly satisfied 
-        self.equilibrium = 0
+        # if the equilibrium (in percent) is 100, it means that every component in the grid is perfectly satisfied.
+        # we keep accumulate the equilibrium with each step and average it over the number of steps in order to get
+        # a metric that tells us how good the energy distribution works at all times
+        self.accumulatedEquilibrium = 0
+
+        # keep track of how many steps have been made. use this counter to compute a running average equilibrium
+        self.stepCounter = 1
 
         # cells that are set to true exist, the other ones don't
         self.cells = []
@@ -109,7 +114,7 @@ class Grid:
         self.p2xs = []
 
         # distribution keeps track of which component ID consumes which other component ID
-        self.distribution = {}
+        self.dependencyMap = {}
 
         # verify and load gridData
         for key in gridData:
@@ -216,15 +221,15 @@ class Grid:
 
     # reset (rendering) distribution of each component
     def resetDistribution(self):
-        self.distribution = {}
+        self.dependencyMap = {}
         for p in self.providers:
-            self.distribution[p.id_] = []
+            self.dependencyMap[p.id_] = []
         for u in self.users:
-            self.distribution[u.id_] = []
+            self.dependencyMap[u.id_] = []
         for s in self.storages:
-            self.distribution[s.id_] = []
+            self.dependencyMap[s.id_] = []
         for p in self.p2xs:
-            self.distribution[p.id_] = []
+            self.dependencyMap[p.id_] = []
 
 
     # update currentKWH/desiredKWHs for each component in the grid
@@ -264,6 +269,39 @@ class Grid:
                                 p.currentKWH = 0
 
 
+    # update the running average equilibrium of the grid
+    def updateEquilibrium(self):
+        compontentCount = 0
+        currentAccumulatedEquilibrium = 0
+        for p in self.providers:
+            if self.cells[p.coordX][p.coordY]:
+                currentAccumulatedEquilibrium += p.getSatisfaction()
+                compontentCount += 1
+        
+        for u in self.users:
+            if self.cells[u.coordX][u.coordY]:
+                currentAccumulatedEquilibrium += u.getSatisfaction()
+                compontentCount += 1
+        
+        for s in self.storages:
+            if self.cells[s.coordX][s.coordY]:
+                currentAccumulatedEquilibrium += s.getSatisfaction()
+                compontentCount += 1
+
+        for p in self.p2xs:
+            if self.cells[p.coordX][p.coordY]:
+                currentAccumulatedEquilibrium += p.getSatisfaction()
+                compontentCount += 1
+
+        currentAverageEquilibrium = currentAccumulatedEquilibrium/compontentCount
+        self.accumulatedEquilibrium += currentAverageEquilibrium
+
+
+
+    def getRunningEquilibrium(self):
+        return self.accumulatedEquilibrium/self.stepCounter
+
+
     # compute the energy flow for the next 15 minutes
     def step(self):
         # map each component to the component it is going to consume in the next timestep
@@ -271,7 +309,7 @@ class Grid:
 
         # TODO
         # - only allow consumption if subgrids are connected
-        # - use dijkstra to compute shortest path between two components, since the longger the path,
+        # - use dijkstra to compute shortest path between two components, since the longer the path,
         #   the more energy is lost in the form of heat
 
         self.resetDistribution()
@@ -298,8 +336,8 @@ class Grid:
                         u.currentKWH += neededKWH
 
                     # keep track of component dependency
-                    if p.id_ not in self.distribution[u.id_]:
-                        self.distribution[u.id_].append(p.id_)
+                    if p.id_ not in self.dependencyMap[u.id_]:
+                        self.dependencyMap[u.id_].append(p.id_)
 
             for s in self.storages:
                 if not self.cells[s.coordX][s.coordY]:
@@ -316,8 +354,8 @@ class Grid:
                         s.currentKWH += neededKWH
 
                     # keep track of component dependency
-                    if p.id_ not in self.distribution[s.id_]:
-                        self.distribution[s.id_].append(p.id_)
+                    if p.id_ not in self.dependencyMap[s.id_]:
+                        self.dependencyMap[s.id_].append(p.id_)
             
             for p2x in self.p2xs:
                 if not self.cells[p2x.coordX][p2x.coordY]:
@@ -334,8 +372,8 @@ class Grid:
                         p2x.currentKWH += neededKWH
 
                     # keep track of component dependency
-                    if p.id_ not in self.distribution[p2x.id_]:
-                        self.distribution[p2x.id_].append(p.id_)
+                    if p.id_ not in self.dependencyMap[p2x.id_]:
+                        self.dependencyMap[p2x.id_].append(p.id_)
                 
         # who gets to consume from storages?
         for s in self.storages:
@@ -357,8 +395,8 @@ class Grid:
                         u.currentKWH += neededKWH
 
                     # keep track of component dependency
-                    if s.id_ not in self.distribution[u.id_]:
-                        self.distribution[u.id_].append(s.id_)
+                    if s.id_ not in self.dependencyMap[u.id_]:
+                        self.dependencyMap[u.id_].append(s.id_)
 
             for p2x in self.p2xs:
                 if not self.cells[p2x.coordX][p2x.coordY]:
@@ -375,10 +413,12 @@ class Grid:
                         p2x.currentKWH += neededKWH
 
                     # keep track of component dependency
-                    if s.id_ not in self.distribution[p2x.id_]:
-                        self.distribution[p2x.id_].append(s.id_)
+                    if s.id_ not in self.dependencyMap[p2x.id_]:
+                        self.dependencyMap[p2x.id_].append(s.id_)
 
         self.simulationDayTime += datetime.timedelta(minutes=15)
+        self.stepCounter += 1
+        self.updateEquilibrium()
 
 
     def getComponentAt(self, x: int, y: int) -> GridComponent:

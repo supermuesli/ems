@@ -239,13 +239,25 @@ def renderMousePosition(font, cellSize: int):
     pos = pygame.mouse.get_pos()
     x, y = getGridPosition(cellSize, pos[0], pos[1])
 
-    timeText = font.render("x:%d | y:%d" % (x, y), True, white)
+    timeText = font.render('x:%d | y:%d' % (x, y), True, white)
     screen.blit(timeText, (windowWidth-200, 230))
 
 
-def renderComponentDistribution(grid):
-    for componentID in grid.distribution:
-        for adjacentComponentID in grid.distribution[componentID]:
+def renderEquilibrium(font, equilibrium: int):
+    if 2/3 < equilibrium/100:
+        color = green
+    elif 1/3 < equilibrium/100 < 2/3:
+        color = yellow
+    else:
+        color = red
+
+    timeText = font.render('%d%%' % equilibrium, True, color)
+    screen.blit(timeText, (windowWidth-200, 360))
+
+
+def renderComponentDependencies(grid):
+    for componentID in grid.dependencyMap:
+        for adjacentComponentID in grid.dependencyMap[componentID]:
             srcX, srcY = grid.getPosition(componentID)
             trgX, trgY = grid.getPosition(adjacentComponentID)
             pygame.draw.line(
@@ -277,8 +289,8 @@ def render(grid: Grid):
         # buffer grid
         renderGridCells(grid)
 
-        # buffer component distribution
-        renderComponentDistribution(grid)
+        # buffer component dependencies
+        renderComponentDependencies(grid)
 
         # buffer grid components
         renderGridComponents(grid, providerRects, userRects, storageRects, p2xRects, font)
@@ -288,6 +300,9 @@ def render(grid: Grid):
 
         # buffer mouse grid position
         renderMousePosition(font, cellSize=grid.cellSize)
+
+        # buffer equilibrium text
+        renderEquilibrium(font, grid.getRunningEquilibrium())
 
         # dump buffer (render)
         pygame.display.flip()
