@@ -38,7 +38,7 @@ class User(GridComponent):
         if self.desiredKWH == 0:
             percent = 100
         else:
-            percent = self.currentKWH/self.desiredKWH
+            percent = self.currentKWH/self.desiredKWH * 100
         return percent
 
 
@@ -54,7 +54,7 @@ class Storage(GridComponent):
         if self.maxKWH == 0:
             percent = 100
         else:
-            percent = self.currentKWH/self.maxKWH
+            percent = self.currentKWH/self.maxKWH * 100
         return percent
 
 
@@ -69,21 +69,28 @@ class P2x(GridComponent):
         if self.desiredKWH == 0:
             percent = 100
         else:
-            percent = self.currentKWH/self.desiredKWH
+            percent = self.currentKWH/self.desiredKWH * 100
         return percent
         
 
 class Grid:
     def __init__(self, gridData: dict, scenario: dict, gridSize: int = 20, timestepSize: int = 1):
+        # mock simulation data of each component in the grid
         self.scenario = scenario
 
+        # size (in px) of each cell in the grid
         self.cellSize = 100
+        # size of the square grid
         self.gridSize = gridSize
 
         # timestepSize in seconds corresponds to 15 elapsed simulation minutes
         self.timestepSize = timestepSize 
 
-        self.displayTime = datetime.datetime(year=1, month=1, day=1, hour=0)
+        # keep track of simulation day time
+        self.simulationDayTime = datetime.datetime(year=1, month=1, day=1, hour=0)
+        
+        # if equilibrium (in percent) is 100, it means that every component in the grid is perfectly satisfied 
+        self.equilibrium = 0
 
         # cells that are set to true exist, the other ones don't
         self.cells = []
@@ -101,7 +108,7 @@ class Grid:
         self.storages = []
         self.p2xs = []
 
-        # distribution keeps track of which component ID relies on which other component ID
+        # distribution keeps track of which component ID consumes which other component ID
         self.distribution = {}
 
         # verify and load gridData
@@ -205,9 +212,24 @@ class Grid:
         # load scenario data
         self.updateScenario()
 
+        self.resetDistribution()
+
+    # reset (rendering) distribution of each component
+    def resetDistribution(self):
+        self.distribution = {}
+        for p in self.providers:
+            self.distribution[p.id_] = []
+        for u in self.users:
+            self.distribution[u.id_] = []
+        for s in self.storages:
+            self.distribution[s.id_] = []
+        for p in self.p2xs:
+            self.distribution[p.id_] = []
+
+
     # update currentKWH/desiredKWHs for each component in the grid
     def updateScenario(self):
-        currentTime = self.displayTime.strftime("%H:%M")
+        currentTime = self.simulationDayTime.strftime("%H:%M")
 
         if currentTime in self.scenario:
             for key in self.scenario[currentTime]:
@@ -218,7 +240,8 @@ class Grid:
                                 # the scenario dictates how much kWh the provider generates at which timestep.
                                 # there is, however, a maximum that a provider can generate, so if the current kWh
                                 # is not consumed, then the provider won't be able to generate more even if the
-                                # scenario would have dictated that to be the case
+                                # scenario would have dictated that to be the case. in the real world, such a 
+                                # generator would be put to stop
                                 if p.currentKWH + self.scenario[currentTime][key][componentID] < p.maxKWH:
                                     p.currentKWH += self.scenario[currentTime][key][componentID]
                                 else:
@@ -230,30 +253,110 @@ class Grid:
                             if u.id_ == componentID:
                                 # the users energy needs are strictly timespecific
                                 u.desiredKWH = self.scenario[currentTime][key][componentID]
+                                u.currentKWH = 0
 
                 if key == 'p2xKWHs':
                     for componentID in self.scenario[currentTime][key]:
-                        for p in self.providers:
+                        for p in self.p2xs:
                             if p.id_ == componentID:
                                 # the p2x energy needs are strictly timespecific
-                                p.currentKWH = self.scenario[currentTime][key][componentID]
+                                p.desiredKWH = self.scenario[currentTime][key][componentID]
+                                p.currentKWH = 0
 
 
     # compute the energy flow for the next 15 minutes
     def step(self):
-        # compute optimal energy flow ->
-        # map each component to the component it is going to use in the next timestep
+        # map each component to the component it is going to consume in the next timestep
+        # prioritize: providers -> users -> storages -> p2x
 
-        # check satisfaction of each component in providers, users, storages, p2xs
+        # TODO
+        # - only allow consumption if subgrids are connected
+        # - use dijkstra to compute shortest path between two components, since the longger the path,
+        #   the more energy is lost in the form of heat
+
+        self.resetDistribution()
+        for u in self.users:
+            if not self.cells[u.coordX][u.coordY]:
+                continue
+
+            for p in self.providers:
+                if not self.cells[p.coordX][p.coordY]:
+                    continue
+            
+                # compute energy consumption
+                if p.currentKWH > 0 and u.currentKWH < u.desiredKWH:
+                    neededKWH = u.desiredKWH - u.currentKWH
+                    p.currentKWH -= neededKWH
+                    if p.currentKWH < 0:
+                        u.currentKWH -= p.currentKWH
+                        p.currentKWH = 0
+                    else:
+                        u.currentKWH += neededKWH
+
+                # keep track of component dependency
+                if p.id_ not in self.distribution[u.id_]:
+                    self.distribution[u.id_].append(p.id_)
+
+            for s in self.storages:
+                if not self.cells[s.coordX][s.coordY]:
+                    continue
+            
+                # compute energy consumption
+                if s.currentKWH > 0 and u.currentKWH < u.desiredKWH:
+                    neededKWH = u.desiredKWH - u.currentKWH
+                    s.currentKWH -= neededKWH
+                    if s.currentKWH < 0:
+                        u.currentKWH -= s.currentKWH
+                        s.currentKWH = 0
+                    else:
+                        u.currentKWH += neededKWH
+
+                # keep track of component dependency
+                if s.id_ not in self.distribution[u.id_]:
+                    self.distribution[u.id_].append(s.id_)
+                
+
         for p in self.providers:
-            for u in self.users:
-                for s in self.storages:
-                    for p2x in self.p2xs:
-                        # self.distribution[..] = ..
-                        pass
-    
+            if not self.cells[p.coordX][p.coordY]:
+                continue
+            
+            for s in self.storages:
+                if not self.cells[s.coordX][s.coordY]:
+                    continue
+            
+                # compute energy consumption
+                if p.currentKWH > 0 and s.currentKWH < s.maxKWH:
+                    neededKWH = s.maxKWH - s.currentKWH
+                    p.currentKWH -= neededKWH
+                    if p.currentKWH < 0:
+                        s.currentKWH -= p.currentKWH
+                        p.currentKWH = 0
+                    else:
+                        s.currentKWH += neededKWH
 
-        self.displayTime += datetime.timedelta(minutes=15)
+                # keep track of component dependency
+                if p.id_ not in self.distribution[s.id_]:
+                    self.distribution[s.id_].append(p.id_)
+
+            for p2x in self.p2xs:
+                if not self.cells[p2x.coordX][p2x.coordY]:
+                    continue
+            
+                # compute energy consumption
+                if p.currentKWH > 0 and p2x.currentKWH < p2x.desiredKWH:
+                    neededKWH = p2x.desiredKWH - p2x.currentKWH
+                    p.currentKWH -= neededKWH
+                    if p.currentKWH < 0:
+                        p2x.currentKWH -= p.currentKWH
+                        p.currentKWH = 0
+                    else:
+                        p2x.currentKWH += neededKWH
+
+                # keep track of component dependency
+                if p.id_ not in self.distribution[p2x.id_]:
+                    self.distribution[p2x.id_].append(p.id_)
+
+        self.simulationDayTime += datetime.timedelta(minutes=15)
         self.updateScenario()
 
 
@@ -274,3 +377,20 @@ class Grid:
         print('could not find component at position (%d, %d)' % (x, y))
         sys.exit(1)
     
+
+    def getPosition(self, componentID: str) -> tuple:
+        for p in self.providers:
+            if p.id_ == componentID:
+                return (p.coordX, p.coordY)
+        for u in self.users:
+            if u.id_ == componentID:
+                return (u.coordX, u.coordY)
+        for s in self.storages:
+            if s.id_ == componentID:
+                return (s.coordX, s.coordY)
+        for p in self.p2xs:
+            if p.id_ == componentID:
+                return (p.coordX, p.coordY)
+
+        print('could not find component with id (%s)' % componentID)
+        sys.exit(1)

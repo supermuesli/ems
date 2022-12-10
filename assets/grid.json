@@ -1,35 +1,35 @@
 {
     "providers": [
         {
-            "id": "1",
+            "id": "provider_1",
             "displayName": "Solar 1",
             "maxKWH": 120,
             "coordX": 0,
             "coordY": 0 
         },
         {
-            "id": "2",
+            "id": "provider_2",
             "displayName": "Solar 2",
             "maxKWH": 120,
             "coordX": 1,
             "coordY": 1 
         },
         {
-            "id": "3",
+            "id": "provider_3",
             "displayName": "Wind 1",
             "maxKWH": 100,
             "coordX": 4,
             "coordY": 2 
         },
         {
-            "id": "4",
+            "id": "provider_4",
             "displayName": "Nuclear Fusion 1",
             "maxKWH": 200,
             "coordX": 2,
             "coordY": 5 
         },
         {
-            "id": "5",
+            "id": "provider_5",
             "displayName": "Nuclear Fusion 2",
             "maxKWH": 200,
             "coordX": 2,
@@ -38,37 +38,37 @@
     ],
     "users": [
         {
-            "id": "1",
+            "id": "user_1",
             "displayName": "Jan",
             "coordX": 1,
             "coordY": 3
         },
         {
-            "id": "2",
+            "id": "user_2",
             "displayName": "Paul",
             "coordX": 7,
             "coordY": 3
         },
         {
-            "id": "3",
+            "id": "user_3",
             "displayName": "Luisa",
             "coordX": 6,
             "coordY": 4
         },
         {
-            "id": "4",
+            "id": "user_4",
             "displayName": "Ferit",
             "coordX": 7,
             "coordY": 0
         },
         {
-            "id": "5",
+            "id": "user_5",
             "displayName": "Industrial 1",
             "coordX": 5,
             "coordY": 4
         },
         {
-            "id": "6",
+            "id": "user_6",
             "displayName": "Industrial 2",
             "coordX": 8,
             "coordY": 4
@@ -76,28 +76,28 @@
     ],
     "storages": [
         {
-            "id": "1",
+            "id": "storage_1",
             "displayName": "Storage 1",
             "coordX": 6,
             "coordY": 5,
             "maxKWH": 20
         },
         {
-            "id": "2",
+            "id": "storage_2",
             "displayName": "Storage 2",
             "coordX": 2,
             "coordY": 4,
             "maxKWH": 30
         },
         {
-            "id": "3",
+            "id": "storage_3",
             "displayName": "Storage 3",
             "coordX": 8,
             "coordY": 5,
             "maxKWH": 50
         },
         {
-            "id": "4",
+            "id": "storage_4",
             "displayName": "Storage 4",
             "coordX": 1,
             "coordY": 5,
@@ -106,13 +106,13 @@
     ],
     "p2xs": [
         {
-            "id": "1",
+            "id": "p2x_1",
             "displayName": "Power to Heat 1",
             "coordX": 4,
             "coordY": 5
         },
         {
-            "id": "2",
+            "id": "p2x_2",
             "displayName": "Power to Heat 2",
             "coordX": 6,
             "coordY": 1

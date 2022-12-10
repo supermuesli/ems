@@ -19,6 +19,7 @@ gray = (100, 100, 100)
 red = (255, 0, 0, 255)
 yellow = (255, 255, 0)
 green = (0, 255, 0)
+blue = (0, 0, 255)
 
 # sprites
 providerSprite = pygame.image.load("assets/images/provider.png")
@@ -239,12 +240,21 @@ def renderMousePosition(font, cellSize: int):
     x, y = getGridPosition(cellSize, pos[0], pos[1])
 
     timeText = font.render("x:%d | y:%d" % (x, y), True, white)
-    screen.blit(timeText, (windowWidth-280, windowHeight-120))
+    screen.blit(timeText, (windowWidth-200, 230))
 
 
-def renderEnergyManagement(grid):
-    # TODO
-    pass
+def renderComponentDistribution(grid):
+    for componentID in grid.distribution:
+        for adjacentComponentID in grid.distribution[componentID]:
+            srcX, srcY = grid.getPosition(componentID)
+            trgX, trgY = grid.getPosition(adjacentComponentID)
+            pygame.draw.line(
+                screen, 
+                blue, 
+                getRenderPosition(grid.cellSize, srcX+0.5, srcY+0.5), 
+                getRenderPosition(grid.cellSize, trgX+0.5, trgY+0.5), 
+                borderWidth
+            )
 
 
 def render(grid: Grid):
@@ -264,17 +274,17 @@ def render(grid: Grid):
         # clear canvas with black
         screen.fill(black)
 
-        # buffer grid components
-        renderGridComponents(grid, providerRects, userRects, storageRects, p2xRects, font)
-
-        # buffer energy management decisions
-        renderEnergyManagement(grid)
-
         # buffer grid
         renderGridCells(grid)
 
+        # buffer component distribution
+        renderComponentDistribution(grid)
+
+        # buffer grid components
+        renderGridComponents(grid, providerRects, userRects, storageRects, p2xRects, font)
+
         # buffer display time
-        renderDisplayTime(font, grid.displayTime)
+        renderDisplayTime(font, grid.simulationDayTime)
 
         # buffer mouse grid position
         renderMousePosition(font, cellSize=grid.cellSize)
