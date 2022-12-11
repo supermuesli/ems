@@ -217,10 +217,10 @@ class Grid:
         # load scenario data
         self.updateScenario()
 
-        self.resetDistribution()
+        self.resetDepencencyMap()
 
-    # reset (rendering) distribution of each component
-    def resetDistribution(self):
+    # reset dependency map of each component
+    def resetDepencencyMap(self):
         self.dependencyMap = {}
         for p in self.providers:
             self.dependencyMap[p.id_] = []
@@ -234,6 +234,8 @@ class Grid:
 
     # update currentKWH/desiredKWHs for each component in the grid
     def updateScenario(self):
+        # TODO interpolate between two scenario timestamps for each timestepsize that fits between those two timestamps 
+
         currentTime = self.simulationDayTime.strftime("%H:%M")
 
         if currentTime in self.scenario:
@@ -297,9 +299,66 @@ class Grid:
         self.accumulatedEquilibrium += currentAverageEquilibrium
 
 
-
+    # the running equilibrium is a metric that can explain whether the grid distributes its energy optimally
+    # among all of its components
     def getRunningEquilibrium(self):
         return self.accumulatedEquilibrium/self.stepCounter
+
+
+    # given an active cells position, get all the other surrounding active cells that belong to the same group
+    def getActiveNeighbourCells(self, x: int, y: int, visited=[]) -> list:
+        group = []
+
+        if (x,y) in visited:
+            return group
+
+        if self.cells[x][y]:
+            group.append((x, y))
+            # check left
+            if y > 0:
+                for pos in self.getActiveNeighbourCells(x, y-1, visited+group):
+                    group.append(pos)
+
+            # check right
+            if y < len(self.cells[x]):
+                for pos in self.getActiveNeighbourCells(x, y+1, visited+group):
+                    group.append(pos)
+
+            # check above
+            if x > 0:
+                for pos in self.getActiveNeighbourCells(x-1, y, visited+group):
+                    group.append(pos)
+            
+            # check below
+            if x < len(self.cells):
+                for pos in self.getActiveNeighbourCells(x+1, y, visited+group):
+                    group.append(pos)
+
+        return group
+
+
+    # get all cell groups on the grid
+    def getCellGroups(self) -> list:
+        groups = []
+        for y in range(len(self.cells)):
+            for x in range(len(self.cells[y])):
+                subGroup = self.getActiveNeighbourCells(x, y)
+                if subGroup != []:
+                    discardSubGroup = False
+                    for pos in subGroup:
+                        for group in groups:
+                            for visitedPos in group:
+                                if pos == visitedPos:
+                                    discardSubGroup = True
+                                    break
+                            if discardSubGroup:
+                                break
+                        if discardSubGroup:
+                            break
+                    if not discardSubGroup:
+                        groups.append(subGroup)
+
+        return groups
 
 
     # compute the energy flow for the next 15 minutes
@@ -312,9 +371,8 @@ class Grid:
         # - use dijkstra to compute shortest path between two components, since the longer the path,
         #   the more energy is lost in the form of heat
 
-        self.resetDistribution()
+        self.resetDepencencyMap()
         self.updateScenario()
-
 
         # who get's to consume from provider?
         for p in self.providers:
@@ -425,12 +483,15 @@ class Grid:
         for p in self.providers:
             if p.coordX == x and p.coordY == y:
                 return p
+
         for u in self.users:
             if u.coordX == x and u.coordY == y:
                 return u
+
         for s in self.storages:
             if s.coordX == x and s.coordY == y:
                 return s
+
         for p in self.p2xs:
             if p.coordX == x and p.coordY == y:
                 return p
@@ -439,16 +500,19 @@ class Grid:
         sys.exit(1)
     
 
-    def getPosition(self, componentID: str) -> tuple:
+    def getPositionOf(self, componentID: str) -> tuple:
         for p in self.providers:
             if p.id_ == componentID:
                 return (p.coordX, p.coordY)
+
         for u in self.users:
             if u.id_ == componentID:
                 return (u.coordX, u.coordY)
+
         for s in self.storages:
             if s.id_ == componentID:
                 return (s.coordX, s.coordY)
+
         for p in self.p2xs:
             if p.id_ == componentID:
                 return (p.coordX, p.coordY)

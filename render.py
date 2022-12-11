@@ -189,8 +189,8 @@ def getGridColor(grid: Grid, x: int, y: int) -> tuple:
 
 
 def renderGridCells(grid: Grid):
-    for x in range(len(grid.cells)):
-        for y in range(len(grid.cells[x])):
+    for y in range(len(grid.cells)):
+        for x in range(len(grid.cells[y])):
             if grid.cells[x][y]:
                 renderX, renderY = getRenderPosition(grid.cellSize, x, y)
                 pygame.draw.rect(
@@ -274,8 +274,8 @@ def renderEquilibrium(font, equilibrium: int):
 def renderComponentDependencies(grid):
     for componentID in grid.dependencyMap:
         for adjacentComponentID in grid.dependencyMap[componentID]:
-            srcX, srcY = grid.getPosition(componentID)
-            trgX, trgY = grid.getPosition(adjacentComponentID)
+            srcX, srcY = grid.getPositionOf(componentID)
+            trgX, trgY = grid.getPositionOf(adjacentComponentID)
             pygame.draw.line(
                 screen, 
                 blue, 
