@@ -25,7 +25,6 @@ def mockGrid() -> Grid:
 def test_getCellGroups():
     g = mockGrid()
     
-
     activeNeighbourCells00 = g.getActiveNeighbourCells(0, 0)
     
     actualActiveNeighbourCells00 = [
@@ -36,7 +35,6 @@ def test_getCellGroups():
     assert len(activeNeighbourCells00) == len(actualActiveNeighbourCells00)
     for a in activeNeighbourCells00:
         assert a in actualActiveNeighbourCells00
-
 
     cellGroups = g.getCellGroups()
     
@@ -60,3 +58,22 @@ def test_getCellGroups():
                         posFound = True
 
             assert posFound
+
+
+def test_getCellDistance():
+    grid = mockGrid()
+
+    cell1 = (2, 2)
+    cell2 = (3, 3)
+    d12 = grid.getCellDistance(cell1[0], cell1[1], cell2[0], cell2[1])
+    assert d12 == 2
+
+    cell1 = (2, 3)
+    cell2 = (3, 3)
+    d12 = grid.getCellDistance(cell1[0], cell1[1], cell2[0], cell2[1])
+    assert d12 == 1
+    
+    cell1 = (0, 0)
+    cell2 = (3, 3)
+    d12 = grid.getCellDistance(cell1[0], cell1[1], cell2[0], cell2[1])
+    assert d12 == 6
