@@ -1,11 +1,6 @@
 from grid import Grid
-from pygame.math import Vector2
-from copy import copy
-import sys, pygame, time, datetime
+import sys, pygame, time
 
-
-# misc
-epsilon = 1**(-8)
 
 # window context
 windowSize = windowWidth, windowHeight = 2100, 1300

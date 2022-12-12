@@ -1,6 +1,6 @@
 import datetime, sys
 from math import inf
-from pygame.math import Vector2
+
 
 class GridComponent:
     def __init__(self, id_: str, coordX: int, coordY: int):
@@ -541,60 +541,39 @@ class Grid:
                         if p.id_ not in self.dependencyMap[s.id_]:
                             self.dependencyMap[s.id_].append(p.id_)
 
-        # step three, p2x's can now consume from the provider's leftovers
-        for p2x in self.p2xs:
-            if (p2x.coordX, p2x.coordY) not in group:
-                continue
-
-            if not self.cells[p2x.coordX][p2x.coordY]:
-                continue
-            
-            for p in self.sortComponentsByDistanceTo(self.providers, p2x):
-                if (p.coordX, p.coordY) not in group:
+            # step three, p2x's can now consume from the provider's leftovers
+            for p2x in self.p2xs:
+                if (p2x.coordX, p2x.coordY) not in group:
                     continue
 
-                if not self.cells[p.coordX][p.coordY]:
+                if not self.cells[p2x.coordX][p2x.coordY]:
                     continue
+                
+                for p in self.sortComponentsByDistanceTo(self.providers, p2x):
+                    if (p.coordX, p.coordY) not in group:
+                        continue
 
-                # compute energy consumption
-                if p.currentKWH > 0 and p2x.currentKWH < p2x.desiredKWH:
-                    neededKWH = p2x.desiredKWH - p2x.currentKWH
-                    p.currentKWH -= neededKWH
-                    if p.currentKWH < 0:
-                        p2x.currentKWH -= p.currentKWH
-                        p.currentKWH = 0
-                    else:
-                        p2x.currentKWH += neededKWH
+                    if not self.cells[p.coordX][p.coordY]:
+                        continue
 
-                    # keep track of component dependency
-                    if p.id_ not in self.dependencyMap[p2x.id_]:
-                        self.dependencyMap[p2x.id_].append(p.id_)
-            
+                    # compute energy consumption
+                    if p.currentKWH > 0 and p2x.currentKWH < p2x.desiredKWH:
+                        neededKWH = p2x.desiredKWH - p2x.currentKWH
+                        p.currentKWH -= neededKWH
+                        if p.currentKWH < 0:
+                            p2x.currentKWH -= p.currentKWH
+                            p.currentKWH = 0
+                        else:
+                            p2x.currentKWH += neededKWH
+
+                        # keep track of component dependency
+                        if p.id_ not in self.dependencyMap[p2x.id_]:
+                            self.dependencyMap[p2x.id_].append(p.id_)
+                
 
         self.simulationDayTime += datetime.timedelta(minutes=15)
         self.stepCounter += 1
         self.updateEquilibrium()
-
-
-    def getComponentAt(self, x: int, y: int) -> GridComponent:
-        for p in self.providers:
-            if p.coordX == x and p.coordY == y:
-                return p
-
-        for u in self.users:
-            if u.coordX == x and u.coordY == y:
-                return u
-
-        for s in self.storages:
-            if s.coordX == x and s.coordY == y:
-                return s
-
-        for p in self.p2xs:
-            if p.coordX == x and p.coordY == y:
-                return p
-
-        print('could not find component at position (%d, %d)' % (x, y))
-        sys.exit(1)
     
 
     def getPositionOf(self, componentID: str) -> tuple:
