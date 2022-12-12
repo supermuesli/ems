@@ -265,8 +265,8 @@ class Grid:
         currentHour = self.simulationDayTime.strftime("%H:00")
         previousHour = (self.simulationDayTime - datetime.timedelta(hours=1)).strftime("%H:00")
 
-        factorB = 0.5*(int(currentMinute)/60)
-        factorA = 0.5*(1-factorB)
+        factorB = (int(currentMinute)/60)
+        factorA = (1-factorB)
 
         if currentHour in self.scenario:
             for key in self.scenario[currentHour]:
