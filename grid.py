@@ -2,7 +2,6 @@ import datetime, sys
 from math import inf
 from pygame.math import Vector2
 
-
 class GridComponent:
     def __init__(self, id_: str, coordX: int, coordY: int):
         self.id_: str = id_
@@ -435,6 +434,21 @@ class Grid:
             currentNode = minPos
         
 
+    # sort a given list of components by the distance to a given source component
+    def sortComponentsByDistanceTo(self, components: list, src: GridComponent) -> list:
+        componentCopy = []
+        subGroup = self.getCellSubgroup(src.coordX, src.coordY)
+        for c in components:
+            if (c.coordX, c.coordY) not in subGroup:
+                continue
+            componentCopy.append(c)
+
+        componentCopy.sort(
+            key=lambda c: self.getCellDistance(src.coordX, src.coordY, c.coordX, c.coordY)
+        )
+
+        return componentCopy
+
 
     # compute the energy flow for the next timestep
     def step(self):
@@ -456,77 +470,47 @@ class Grid:
                 if not self.cells[u.coordX][u.coordY]:
                     continue
 
-                providerDistances = []
-                for p in self.providers:
+                for p in self.sortComponentsByDistanceTo(self.providers, u):
                     if (p.coordX, p.coordY) not in group:
                         continue
 
                     if not self.cells[p.coordX][p.coordY]:
                         continue
 
-                    # get distance and buffer option until all options are found
-                    providerDistances.append(
-                        (p, self.getCellDistance(p.coordX, p.coordY, u.coordX, u.coordY))
-                    )
-
-                # identify closest provider
-                minProviderDistance = inf
-                clostestProvider = None
-                for (p, d) in providerDistances:
-                    if d < minProviderDistance:
-                        clostestProvider = p
-                        minProviderDistance = d
-
-                # compute energy consumption
-                if clostestProvider:
-                    if clostestProvider.currentKWH > 0 and u.currentKWH < u.desiredKWH:
+                    # compute energy consumption
+                    if p.currentKWH > 0 and u.currentKWH < u.desiredKWH:
                         neededKWH = u.desiredKWH - u.currentKWH
-                        clostestProvider.currentKWH -= neededKWH
-                        if clostestProvider.currentKWH < 0:
-                            u.currentKWH -= clostestProvider.currentKWH
-                            clostestProvider.currentKWH = 0
+                        p.currentKWH -= neededKWH
+                        if p.currentKWH < 0:
+                            u.currentKWH -= p.currentKWH
+                            p.currentKWH = 0
                         else:
                             u.currentKWH += neededKWH
 
                         # keep track of component dependency
-                        if clostestProvider.id_ not in self.dependencyMap[u.id_]:
-                            self.dependencyMap[u.id_].append(clostestProvider.id_)
+                        if p.id_ not in self.dependencyMap[u.id_]:
+                            self.dependencyMap[u.id_].append(p.id_)
 
-                storageDistances = []
-                for s in self.storages:
+                for s in self.sortComponentsByDistanceTo(self.storages, u):
                     if (s.coordX, s.coordY) not in group:
                         continue
 
                     if not self.cells[s.coordX][s.coordY]:
                         continue
                 
-                    # get distance and buffer option until all options are found
-                    storageDistances.append(
-                        (s, self.getCellDistance(s.coordX, s.coordY, u.coordX, u.coordY))
-                    )
-
-                # identify closest storage
-                minStorageDistance = inf
-                clostestStorage = None
-                for (s, d) in storageDistances:
-                    if d < minStorageDistance:
-                        clostestStorage = s
-                        minStorageDistance = d
-
-                # compute energy consumption
-                if clostestStorage:
-                    if clostestStorage.currentKWH > 0 and u.currentKWH < u.desiredKWH:
+                    # compute energy consumption
+                    if s.currentKWH > 0 and u.currentKWH < u.desiredKWH:
                         neededKWH = u.desiredKWH - u.currentKWH
-                        clostestStorage.currentKWH -= neededKWH
-                        if clostestStorage.currentKWH < 0:
-                            u.currentKWH -= clostestStorage.currentKWH
-                            clostestStorage.currentKWH = 0
+                        s.currentKWH -= neededKWH
+                        if s.currentKWH < 0:
+                            u.currentKWH -= s.currentKWH
+                            s.currentKWH = 0
                         else:
                             u.currentKWH += neededKWH
 
                         # keep track of component dependency
-                        if clostestStorage.id_ not in self.dependencyMap[u.id_]:
-                            self.dependencyMap[u.id_].append(clostestStorage.id_)
+                        if s.id_ not in self.dependencyMap[u.id_]:
+                            self.dependencyMap[u.id_].append(s.id_)
                     
             # step 2, storages can now consume from providers
             for s in self.storages:
@@ -536,41 +520,26 @@ class Grid:
                 if not self.cells[s.coordX][s.coordY]:
                     continue
             
-                providerDistances = []
-                for p in self.providers:
+                for p in self.sortComponentsByDistanceTo(self.providers, s):
                     if (p.coordX, p.coordY) not in group:
                         continue
 
                     if not self.cells[p.coordX][p.coordY]:
                         continue
 
-                    # get distance and buffer option until all options are found
-                    providerDistances.append(
-                        (p, self.getCellDistance(p.coordX, p.coordY, s.coordX, s.coordY))
-                    )
-
-                # identify closest provider
-                minProviderDistance = inf
-                clostestProvider = None
-                for (p, d) in providerDistances:
-                    if d < minProviderDistance:
-                        clostestProvider = p
-                        minProviderDistance = d
-
-                # compute energy consumption
-                if clostestProvider:
-                    if clostestProvider.currentKWH > 0 and s.currentKWH < s.maxKWH:
+                    # compute energy consumption
+                    if p.currentKWH > 0 and s.currentKWH < s.maxKWH:
                         neededKWH = s.maxKWH - s.currentKWH
-                        clostestProvider.currentKWH -= neededKWH
-                        if clostestProvider.currentKWH < 0:
-                            s.currentKWH -= clostestProvider.currentKWH
-                            clostestProvider.currentKWH = 0
+                        p.currentKWH -= neededKWH
+                        if p.currentKWH < 0:
+                            s.currentKWH -= p.currentKWH
+                            p.currentKWH = 0
                         else:
                             s.currentKWH += neededKWH
 
                         # keep track of component dependency
-                        if clostestProvider.id_ not in self.dependencyMap[s.id_]:
-                            self.dependencyMap[s.id_].append(clostestProvider.id_)
+                        if p.id_ not in self.dependencyMap[s.id_]:
+                            self.dependencyMap[s.id_].append(p.id_)
 
         # step three, p2x's can now consume from the provider's leftovers
         for p2x in self.p2xs:
@@ -580,41 +549,26 @@ class Grid:
             if not self.cells[p2x.coordX][p2x.coordY]:
                 continue
             
-            providerDistances = []
-            for p in self.providers:
+            for p in self.sortComponentsByDistanceTo(self.providers, p2x):
                 if (p.coordX, p.coordY) not in group:
-                        continue
+                    continue
 
                 if not self.cells[p.coordX][p.coordY]:
                     continue
 
-                # get distance and buffer option until all options are found
-                providerDistances.append(
-                    (p, self.getCellDistance(p.coordX, p.coordY, p2x.coordX, p2x.coordY))
-                )
-
-            # identify closest provider
-            minProviderDistance = inf
-            clostestProvider = None
-            for (p, d) in providerDistances:
-                if d < minProviderDistance:
-                    clostestProvider = p
-                    minProviderDistance = d
-        
-            # compute energy consumption
-            if clostestProvider:
-                if clostestProvider.currentKWH > 0 and p2x.currentKWH < p2x.desiredKWH:
+                # compute energy consumption
+                if p.currentKWH > 0 and p2x.currentKWH < p2x.desiredKWH:
                     neededKWH = p2x.desiredKWH - p2x.currentKWH
-                    clostestProvider.currentKWH -= neededKWH
-                    if clostestProvider.currentKWH < 0:
-                        p2x.currentKWH -= clostestProvider.currentKWH
-                        clostestProvider.currentKWH = 0
+                    p.currentKWH -= neededKWH
+                    if p.currentKWH < 0:
+                        p2x.currentKWH -= p.currentKWH
+                        p.currentKWH = 0
                     else:
                         p2x.currentKWH += neededKWH
 
                     # keep track of component dependency
-                    if clostestProvider.id_ not in self.dependencyMap[p2x.id_]:
-                        self.dependencyMap[p2x.id_].append(clostestProvider.id_)
+                    if p.id_ not in self.dependencyMap[p2x.id_]:
+                        self.dependencyMap[p2x.id_].append(p.id_)
             
 
         self.simulationDayTime += datetime.timedelta(minutes=15)

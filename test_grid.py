@@ -82,3 +82,13 @@ def test_getCellDistance():
     cell8 = (0, 0)
     d78 = grid.getCellDistance(cell7[0], cell7[1], cell8[0], cell8[1])
     assert d78 == 3
+
+
+def test_sortComponentsByDistanceTo():
+    grid = mockGrid()
+
+    sortedProviders = grid.sortComponentsByDistanceTo(grid.providers, grid.users[0])
+
+    actualSortedProviders = [grid.providers[1], grid.providers[0]]
+
+    assert sortedProviders == actualSortedProviders

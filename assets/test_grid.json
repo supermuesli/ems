@@ -40,38 +40,8 @@
         {
             "id": "user_1",
             "displayName": "Jan",
-            "coordX": 1,
-            "coordY": 3
-        },
-        {
-            "id": "user_2",
-            "displayName": "Paul",
-            "coordX": 7,
-            "coordY": 3
-        },
-        {
-            "id": "user_3",
-            "displayName": "Luisa",
-            "coordX": 6,
-            "coordY": 4
-        },
-        {
-            "id": "user_4",
-            "displayName": "Ferit",
-            "coordX": 7,
-            "coordY": 0
-        },
-        {
-            "id": "user_5",
-            "displayName": "Industrial 1",
-            "coordX": 5,
-            "coordY": 4
-        },
-        {
-            "id": "user_6",
-            "displayName": "Industrial 2",
-            "coordX": 8,
-            "coordY": 4
+            "coordX": 2,
+            "coordY": 1
         }
     ],
     "storages": [
