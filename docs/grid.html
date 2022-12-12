@@ -57,28 +57,49 @@
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Grid-__init__"><strong>__init__</strong></a>(self, gridData: dict, scenario: dict, gridSize: int = 20, timestepSize: float = 1)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="Grid-getCellDistance"><strong>getCellDistance</strong></a>(self, srcX: int, srcY: int, trgX: int, trgY: int) -&gt; int</dt><dd><tt>#&nbsp;returns&nbsp;the&nbsp;amount&nbsp;of&nbsp;active&nbsp;cells&nbsp;between&nbsp;the&nbsp;two&nbsp;given&nbsp;active&nbsp;cell's&nbsp;positions</tt></dd></dl>
+<dl><dt><a name="Grid-getCellDistance"><strong>getCellDistance</strong></a>(self, srcX: int, srcY: int, trgX: int, trgY: int) -&gt; int</dt><dd><tt>Returns&nbsp;the&nbsp;amount&nbsp;of&nbsp;active&nbsp;cells&nbsp;between&nbsp;the&nbsp;two&nbsp;given&nbsp;active&nbsp;cell's&nbsp;positions.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;srcX(int):&nbsp;x&nbsp;position&nbsp;of&nbsp;source&nbsp;cell<br>
+&nbsp;&nbsp;&nbsp;&nbsp;srcY(int):&nbsp;y&nbsp;position&nbsp;of&nbsp;source&nbsp;cell<br>
+&nbsp;&nbsp;&nbsp;&nbsp;trgX(int):&nbsp;x&nbsp;position&nbsp;of&nbsp;target&nbsp;cell<br>
+&nbsp;&nbsp;&nbsp;&nbsp;trgY(int):&nbsp;y&nbsp;position&nbsp;of&nbsp;target&nbsp;cell<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int:&nbsp;grid&nbsp;distance&nbsp;(not&nbsp;euclidean)&nbsp;between&nbsp;source&nbsp;and&nbsp;target&nbsp;cell</tt></dd></dl>
 
-<dl><dt><a name="Grid-getCellGroups"><strong>getCellGroups</strong></a>(self) -&gt; list</dt><dd><tt>#&nbsp;get&nbsp;all&nbsp;cell&nbsp;groups&nbsp;on&nbsp;the&nbsp;grid</tt></dd></dl>
+<dl><dt><a name="Grid-getCellGroups"><strong>getCellGroups</strong></a>(self) -&gt; list</dt><dd><tt>Get&nbsp;all&nbsp;cell&nbsp;groups&nbsp;on&nbsp;the&nbsp;grid.</tt></dd></dl>
 
-<dl><dt><a name="Grid-getCellSubgroup"><strong>getCellSubgroup</strong></a>(self, x: int, y: int, visited=[]) -&gt; list</dt><dd><tt>#&nbsp;given&nbsp;an&nbsp;active&nbsp;cells&nbsp;position,&nbsp;get&nbsp;all&nbsp;the&nbsp;other&nbsp;surrounding&nbsp;active&nbsp;cells&nbsp;that&nbsp;belong&nbsp;to&nbsp;the&nbsp;same&nbsp;group</tt></dd></dl>
+<dl><dt><a name="Grid-getCellSubgroup"><strong>getCellSubgroup</strong></a>(self, x: int, y: int, visited=[]) -&gt; list</dt><dd><tt>Given&nbsp;an&nbsp;active&nbsp;cells&nbsp;position,&nbsp;get&nbsp;all&nbsp;the&nbsp;other&nbsp;surrounding&nbsp;active&nbsp;cells&nbsp;that&nbsp;belong&nbsp;to&nbsp;the&nbsp;same&nbsp;group.</tt></dd></dl>
 
-<dl><dt><a name="Grid-getDirectNeighbours"><strong>getDirectNeighbours</strong></a>(self, x: int, y: int) -&gt; list</dt><dd><tt>#&nbsp;get&nbsp;the&nbsp;direct&nbsp;active&nbsp;neighbour&nbsp;cells&nbsp;(up,&nbsp;down,&nbsp;left,&nbsp;right)&nbsp;of&nbsp;a&nbsp;given&nbsp;cell&nbsp;position</tt></dd></dl>
+<dl><dt><a name="Grid-getDirectNeighbours"><strong>getDirectNeighbours</strong></a>(self, x: int, y: int) -&gt; list</dt><dd><tt>Get&nbsp;the&nbsp;direct&nbsp;active&nbsp;neighbour&nbsp;cells&nbsp;(up,&nbsp;down,&nbsp;left,&nbsp;right)&nbsp;of&nbsp;a&nbsp;given&nbsp;cell&nbsp;position.</tt></dd></dl>
 
-<dl><dt><a name="Grid-getPositionOf"><strong>getPositionOf</strong></a>(self, componentID: str) -&gt; tuple</dt></dl>
+<dl><dt><a name="Grid-getPositionOf"><strong>getPositionOf</strong></a>(self, componentID: str) -&gt; tuple</dt><dd><tt>Get&nbsp;the&nbsp;position&nbsp;of&nbsp;the&nbsp;given&nbsp;component.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;componentID(str):&nbsp;ID&nbsp;of&nbsp;the&nbsp;component<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;position&nbsp;tuple&nbsp;(x,&nbsp;y)&nbsp;in&nbsp;grid&nbsp;space</tt></dd></dl>
 
-<dl><dt><a name="Grid-getRunningEquilibrium"><strong>getRunningEquilibrium</strong></a>(self)</dt><dd><tt>#&nbsp;the&nbsp;running&nbsp;equilibrium&nbsp;is&nbsp;a&nbsp;metric&nbsp;that&nbsp;can&nbsp;explain&nbsp;whether&nbsp;the&nbsp;grid&nbsp;distributes&nbsp;its&nbsp;energy&nbsp;optimally<br>
-#&nbsp;among&nbsp;all&nbsp;of&nbsp;its&nbsp;components</tt></dd></dl>
+<dl><dt><a name="Grid-getRunningEquilibrium"><strong>getRunningEquilibrium</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;running&nbsp;equilibrium.&nbsp;It&nbsp;is&nbsp;a&nbsp;metric&nbsp;that&nbsp;can&nbsp;explain&nbsp;whether&nbsp;the&nbsp;grid&nbsp;distributes&nbsp;its&nbsp;energy&nbsp;optimally&nbsp;among&nbsp;all&nbsp;of&nbsp;its&nbsp;components.</tt></dd></dl>
 
-<dl><dt><a name="Grid-resetDepencencyMap"><strong>resetDepencencyMap</strong></a>(self)</dt><dd><tt>#&nbsp;reset&nbsp;dependency&nbsp;map&nbsp;of&nbsp;each&nbsp;component</tt></dd></dl>
+<dl><dt><a name="Grid-resetDepencencyMap"><strong>resetDepencencyMap</strong></a>(self) -&gt; None</dt><dd><tt>Resets&nbsp;the&nbsp;dependency&nbsp;map&nbsp;(purple&nbsp;lines&nbsp;in&nbsp;the&nbsp;simulation)&nbsp;of&nbsp;each&nbsp;component.</tt></dd></dl>
 
-<dl><dt><a name="Grid-sortComponentsByDistanceTo"><strong>sortComponentsByDistanceTo</strong></a>(self, components: list, src: grid.GridComponent) -&gt; list</dt><dd><tt>#&nbsp;sort&nbsp;a&nbsp;given&nbsp;list&nbsp;of&nbsp;components&nbsp;by&nbsp;the&nbsp;distance&nbsp;to&nbsp;a&nbsp;given&nbsp;source&nbsp;component</tt></dd></dl>
+<dl><dt><a name="Grid-sortComponentsByDistanceTo"><strong>sortComponentsByDistanceTo</strong></a>(self, components: list, src: grid.GridComponent) -&gt; list</dt><dd><tt>Returns&nbsp;a&nbsp;sorted&nbsp;list&nbsp;of&nbsp;components&nbsp;by&nbsp;the&nbsp;distance&nbsp;to&nbsp;a&nbsp;given&nbsp;source&nbsp;component.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;components(list):&nbsp;list&nbsp;of&nbsp;grid&nbsp;components<br>
+&nbsp;&nbsp;&nbsp;&nbsp;src(<a href="#GridComponent">GridComponent</a>):&nbsp;the&nbsp;source&nbsp;grid&nbsp;component<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;the&nbsp;given&nbsp;components&nbsp;list&nbsp;sorted&nbsp;(ascending)&nbsp;by&nbsp;distance&nbsp;to&nbsp;the&nbsp;source&nbsp;component</tt></dd></dl>
 
-<dl><dt><a name="Grid-step"><strong>step</strong></a>(self)</dt><dd><tt>#&nbsp;compute&nbsp;the&nbsp;energy&nbsp;flow&nbsp;for&nbsp;the&nbsp;next&nbsp;timestep</tt></dd></dl>
+<dl><dt><a name="Grid-step"><strong>step</strong></a>(self) -&gt; None</dt><dd><tt>Computes&nbsp;the&nbsp;energy&nbsp;flow&nbsp;for&nbsp;the&nbsp;next&nbsp;timestep.</tt></dd></dl>
 
-<dl><dt><a name="Grid-updateEquilibrium"><strong>updateEquilibrium</strong></a>(self)</dt><dd><tt>#&nbsp;update&nbsp;the&nbsp;running&nbsp;average&nbsp;equilibrium&nbsp;of&nbsp;the&nbsp;grid</tt></dd></dl>
+<dl><dt><a name="Grid-updateEquilibrium"><strong>updateEquilibrium</strong></a>(self) -&gt; None</dt><dd><tt>Updates&nbsp;the&nbsp;running&nbsp;average&nbsp;equilibrium&nbsp;of&nbsp;the&nbsp;grid</tt></dd></dl>
 
-<dl><dt><a name="Grid-updateScenario"><strong>updateScenario</strong></a>(self)</dt><dd><tt>#&nbsp;update&nbsp;currentKWH/desiredKWHs&nbsp;for&nbsp;each&nbsp;component&nbsp;in&nbsp;the&nbsp;grid</tt></dd></dl>
+<dl><dt><a name="Grid-updateScenario"><strong>updateScenario</strong></a>(self) -&gt; None</dt><dd><tt>Updates&nbsp;currentKWH/desiredKWHs&nbsp;for&nbsp;each&nbsp;component&nbsp;in&nbsp;the&nbsp;grid.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -130,7 +151,10 @@ Data descriptors defined here:<br>
 Methods defined here:<br>
 <dl><dt><a name="P2x-__init__"><strong>__init__</strong></a>(self, id_: str, coordX: int, coordY: int)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="P2x-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>#&nbsp;returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
+<dl><dt><a name="P2x-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;satisfaction&nbsp;of&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent</a>:<br>
@@ -160,7 +184,10 @@ Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent<
 Methods defined here:<br>
 <dl><dt><a name="Provider-__init__"><strong>__init__</strong></a>(self, id_: str, coordX: int, coordY: int, maxKWH: int)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="Provider-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>#&nbsp;returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
+<dl><dt><a name="Provider-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;satisfaction&nbsp;of&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent</a>:<br>
@@ -190,7 +217,10 @@ Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent<
 Methods defined here:<br>
 <dl><dt><a name="Storage-__init__"><strong>__init__</strong></a>(self, id_: str, coordX: int, coordY: int, maxKWH: int)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="Storage-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>#&nbsp;returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
+<dl><dt><a name="Storage-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;satisfaction&nbsp;of&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent</a>:<br>
@@ -220,7 +250,10 @@ Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent<
 Methods defined here:<br>
 <dl><dt><a name="User-__init__"><strong>__init__</strong></a>(self, id_: str, coordX: int, coordY: int)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="User-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>#&nbsp;returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
+<dl><dt><a name="User-getSatisfaction"><strong>getSatisfaction</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;satisfaction&nbsp;of&nbsp;this&nbsp;component&nbsp;in&nbsp;percent<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;satisfaction&nbsp;of&nbsp;component&nbsp;in&nbsp;percent</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="grid.html#GridComponent">GridComponent</a>:<br>

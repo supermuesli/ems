@@ -1,6 +1,6 @@
 # Energy Management System (EMS)
 
-EMS is a primitive energy management system simulation that features energy provider, user, storage and P2X (power to x) components. For each component in the grid, the EMS decides which other component to consume in the next timestep by looking at the workload and proximity. 
+EMS is a greedy energy management system simulation that features energy provider, user, storage and P2X (power to x) components. For each component in the grid, the EMS decides which other component to consume in the next timestep by looking at the workload and proximity. 
 
 This EMS delivers a **greedy energy** solution for a function *f* that tries to maximize the workload of each component. The running average workload per timestep in percent - called **equilibrium** - is featured on the middle right corner of the simulation UI. The higher the equilibrium, the better the energy solution for any scenario.
 

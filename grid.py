@@ -17,8 +17,13 @@ class Provider(GridComponent):
         self.maxKWH = maxKWH
 
 
-    # returns the satisfaction of this component in percent
     def getSatisfaction(self) -> float:
+        """Returns the satisfaction of this component in percent
+        
+        Returns:
+            float: satisfaction of component in percent
+        """
+
         percent = 0
         if self.currentKWH == 0:
             percent = 100
@@ -32,8 +37,13 @@ class User(GridComponent):
         super().__init__(id_, coordX, coordY)
 
     
-    # returns the satisfaction of this component in percent
     def getSatisfaction(self) -> float:
+        """Returns the satisfaction of this component in percent
+        
+        Returns:
+            float: satisfaction of component in percent
+        """
+
         percent = 0
         if self.desiredKWH == 0:
             percent = 100
@@ -48,8 +58,13 @@ class Storage(GridComponent):
         self.maxKWH = maxKWH
     
 
-    # returns the satisfaction of this component in percent
     def getSatisfaction(self) -> float:
+        """Returns the satisfaction of this component in percent
+        
+        Returns:
+            float: satisfaction of component in percent
+        """
+
         percent = 0
         if self.maxKWH == 0:
             percent = 100
@@ -63,8 +78,13 @@ class P2x(GridComponent):
         super().__init__(id_, coordX, coordY)
 
 
-    # returns the satisfaction of this component in percent
     def getSatisfaction(self) -> float:
+        """Returns the satisfaction of this component in percent
+        
+        Returns:
+            float: satisfaction of component in percent
+        """
+
         percent = 0
         if self.desiredKWH == 0:
             percent = 100
@@ -223,8 +243,9 @@ class Grid:
 
         self.resetDepencencyMap()
 
-    # reset dependency map of each component
-    def resetDepencencyMap(self):
+    def resetDepencencyMap(self) -> None:
+        """Resets the dependency map (purple lines in the simulation) of each component."""
+
         self.dependencyMap = {}
         for p in self.providers:
             self.dependencyMap[p.id_] = []
@@ -236,8 +257,9 @@ class Grid:
             self.dependencyMap[p.id_] = []
 
 
-    # update currentKWH/desiredKWHs for each component in the grid
-    def updateScenario(self):
+    def updateScenario(self) -> None:
+        """Updates currentKWH/desiredKWHs for each component in the grid."""
+
         # TODO interpolate between two scenario timestamps for each timestepsize that fits between those two timestamps 
 
         currentTime = self.simulationDayTime.strftime("%H:%M")
@@ -275,8 +297,8 @@ class Grid:
                                 p.currentKWH = 0
 
 
-    # update the running average equilibrium of the grid
-    def updateEquilibrium(self):
+    def updateEquilibrium(self) -> None:
+        """Updates the running average equilibrium of the grid"""
         compontentCount = 0
         currentAccumulatedEquilibrium = 0
         for p in self.providers:
@@ -303,14 +325,14 @@ class Grid:
         self.accumulatedEquilibrium += currentAverageEquilibrium
 
 
-    # the running equilibrium is a metric that can explain whether the grid distributes its energy optimally
-    # among all of its components
-    def getRunningEquilibrium(self):
+    def getRunningEquilibrium(self) -> float:
+        """Returns the running equilibrium. It is a metric that can explain whether the grid distributes its energy optimally among all of its components."""
         return self.accumulatedEquilibrium/self.stepCounter
 
 
-    # given an active cells position, get all the other surrounding active cells that belong to the same group
     def getCellSubgroup(self, x: int, y: int, visited=[]) -> list:
+        """Given an active cells position, get all the other surrounding active cells that belong to the same group."""
+        
         group = []
 
         if (x,y) in visited:
@@ -341,8 +363,9 @@ class Grid:
         return group
 
 
-    # get all cell groups on the grid
     def getCellGroups(self) -> list:
+        """Get all cell groups on the grid."""
+        
         groups = []
         for y in range(len(self.cells)):
             for x in range(len(self.cells[y])):
@@ -365,8 +388,9 @@ class Grid:
         return groups
 
 
-    # get the direct active neighbour cells (up, down, left, right) of a given cell position
     def getDirectNeighbours(self, x: int, y: int) -> list:
+        """Get the direct active neighbour cells (up, down, left, right) of a given cell position."""
+        
         if not self.cells[x][y]:
             return []
         
@@ -395,8 +419,19 @@ class Grid:
         return neighbours
 
 
-    # returns the amount of active cells between the two given active cell's positions
     def getCellDistance(self, srcX: int, srcY: int, trgX: int, trgY: int) -> int:
+        """Returns the amount of active cells between the two given active cell's positions.
+        
+        Args:
+            srcX(int): x position of source cell
+            srcY(int): y position of source cell
+            trgX(int): x position of target cell
+            trgY(int): y position of target cell
+        
+        Returns:
+            int: grid distance (not euclidean) between source and target cell
+        """
+        
         # dijkstra algortihm
         # https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Algorithm
         
@@ -434,8 +469,17 @@ class Grid:
             currentNode = minPos
         
 
-    # sort a given list of components by the distance to a given source component
     def sortComponentsByDistanceTo(self, components: list, src: GridComponent) -> list:
+        """Returns a sorted list of components by the distance to a given source component.
+        
+        Args:
+            components(list): list of grid components
+            src(GridComponent): the source grid component
+
+        Returns:
+            list: the given components list sorted (ascending) by distance to the source component
+        """
+        
         componentCopy = []
         subGroup = self.getCellSubgroup(src.coordX, src.coordY)
         for c in components:
@@ -450,8 +494,39 @@ class Grid:
         return componentCopy
 
 
-    # compute the energy flow for the next timestep
-    def step(self):
+    def getPositionOf(self, componentID: str) -> tuple:
+        """Get the position of the given component.
+        
+        Args:
+            componentID(str): ID of the component
+
+        Returns:
+            tuple: position tuple (x, y) in grid space
+        """
+        
+        for p in self.providers:
+            if p.id_ == componentID:
+                return (p.coordX, p.coordY)
+
+        for u in self.users:
+            if u.id_ == componentID:
+                return (u.coordX, u.coordY)
+
+        for s in self.storages:
+            if s.id_ == componentID:
+                return (s.coordX, s.coordY)
+
+        for p in self.p2xs:
+            if p.id_ == componentID:
+                return (p.coordX, p.coordY)
+
+        print('could not find component with id (%s)' % componentID)
+        sys.exit(1)
+
+
+    def step(self) -> None:
+        """Computes the energy flow for the next timestep."""
+        
         # map each component to the component it is going to consume in the next timestep
         # prioritize: providers -> users -> storages -> p2x
 
@@ -575,23 +650,3 @@ class Grid:
         self.stepCounter += 1
         self.updateEquilibrium()
     
-
-    def getPositionOf(self, componentID: str) -> tuple:
-        for p in self.providers:
-            if p.id_ == componentID:
-                return (p.coordX, p.coordY)
-
-        for u in self.users:
-            if u.id_ == componentID:
-                return (u.coordX, u.coordY)
-
-        for s in self.storages:
-            if s.id_ == componentID:
-                return (s.coordX, s.coordY)
-
-        for p in self.p2xs:
-            if p.id_ == componentID:
-                return (p.coordX, p.coordY)
-
-        print('could not find component with id (%s)' % componentID)
-        sys.exit(1)

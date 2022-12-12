@@ -135,18 +135,45 @@ def handleEvents(font, grid: Grid):
         handleKeyPress(font, grid, event)
 
 
-# converts a cell position on the grid to a position on the canvas
 def getRenderPosition(cellSize: int, x: int, y: int) -> (int, int):
+    """ Converts a cell position on the grid to a position on the canvas
+    
+    Args:
+        x(int): x position in grid space
+        y(int): y position in grid space
+    
+    Returns:
+        tuple: position tuple (x, y) in render space
+    """
     return x*cellSize, y*cellSize
 
 
-# converts a position on the canvas to cell position on the grid
+
 def getGridPosition(cellSize: int, x: float, y: float) -> (int, int):
+    """ Converts a position on the canvas to cell position on the grid.
+
+    Args:
+        x(float): x position in render space
+        y(float): y position in render space
+    
+    Returns:
+        tuple: position tuple (x, y) in grid space
+    """
+
     return round(x/cellSize - 0.5), round(y/cellSize - 0.5)
 
 
-# get grid color based on satisfaction of component that resides on the given coordiantes
 def getGridColor(grid: Grid, x: int, y: int) -> tuple:
+    """ Get grid color based on satisfaction of component that resides on the given coordiantes.
+
+    Args:
+        x(float): x position in grid space
+        y(float): y position in grid space
+    
+    Returns:
+        tuple: RGB color: green if satisfaction > 2/3, yellow if > 1/3 and red else 
+    """
+
     for p in grid.providers:
         if p.coordX == x and p.coordY == y:
             if p.getSatisfaction()/100 > 2/3:    
