@@ -34,7 +34,7 @@ You might have to increase/decrease the `gridSize` in `main.py` depending on you
 ## License
 MIT License
 
-Copyright (c) [2022] [Ferit, Tohidi Far (github.com/supermuesli)]
+Copyright (c) 2022 Ferit, Tohidi Far (github.com/supermuesli)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

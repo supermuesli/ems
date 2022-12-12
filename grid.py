@@ -111,7 +111,7 @@ class Grid:
         self.timestepSize = timestepSize 
 
         # keep track of simulation day time
-        self.simulationDayTime = datetime.datetime(year=1, month=1, day=1, hour=0)
+        self.simulationDayTime = datetime.datetime(year=1, month=1, day=2, hour=0)
         
         # if the equilibrium (in percent) is 100, it means that every component in the grid is perfectly satisfied.
         # we keep accumulate the equilibrium with each step and average it over the number of steps in order to get
@@ -260,14 +260,18 @@ class Grid:
     def updateScenario(self) -> None:
         """Updates currentKWH/desiredKWHs for each component in the grid."""
 
-        # TODO interpolate between two scenario timestamps for each timestepsize that fits between those two timestamps 
+        # interpolate between two scenario timestamps for each timestepsize that fits between those two timestamps 
+        currentMinute = self.simulationDayTime.strftime("%M")
+        currentHour = self.simulationDayTime.strftime("%H:00")
+        previousHour = (self.simulationDayTime - datetime.timedelta(hours=1)).strftime("%H:00")
 
-        currentTime = self.simulationDayTime.strftime("%H:%M")
+        factorB = int(currentMinute)/60
+        factorA = 1-factorB
 
-        if currentTime in self.scenario:
-            for key in self.scenario[currentTime]:
+        if currentHour in self.scenario:
+            for key in self.scenario[currentHour]:
                 if key == 'providerKWHs':
-                    for componentID in self.scenario[currentTime][key]:
+                    for componentID in self.scenario[currentHour][key]:
                         for p in self.providers:
                             if p.id_ == componentID:
                                 # the scenario dictates how much kWh the provider generates at which timestep.
@@ -275,25 +279,34 @@ class Grid:
                                 # is not consumed, then the provider won't be able to generate more even if the
                                 # scenario would have dictated that to be the case. in the real world, such a 
                                 # generator would be put to stop
-                                if p.currentKWH + self.scenario[currentTime][key][componentID] < p.maxKWH:
-                                    p.currentKWH += self.scenario[currentTime][key][componentID]
+                                energyState = factorA*self.scenario[previousHour][key][componentID] + \
+                                              factorB*self.scenario[currentHour][key][componentID]
+                                
+                                if p.currentKWH + energyState < p.maxKWH:
+                                    p.currentKWH += energyState
                                 else:
                                     p.currentKWH = p.maxKWH
 
                 if key == 'userKWHs':
-                    for componentID in self.scenario[currentTime][key]:
+                    for componentID in self.scenario[currentHour][key]:
                         for u in self.users:
                             if u.id_ == componentID:
                                 # the users energy needs are strictly timespecific
-                                u.desiredKWH = self.scenario[currentTime][key][componentID]
+                                energyState = factorA*self.scenario[previousHour][key][componentID] + \
+                                              factorB*self.scenario[currentHour][key][componentID]
+
+                                u.desiredKWH = energyState
                                 u.currentKWH = 0
 
                 if key == 'p2xKWHs':
-                    for componentID in self.scenario[currentTime][key]:
+                    for componentID in self.scenario[currentHour][key]:
                         for p in self.p2xs:
                             if p.id_ == componentID:
                                 # the p2x energy needs are strictly timespecific
-                                p.desiredKWH = self.scenario[currentTime][key][componentID]
+                                energyState = factorA*self.scenario[previousHour][key][componentID] + \
+                                              factorB*self.scenario[currentHour][key][componentID]
+
+                                p.desiredKWH = energyState
                                 p.currentKWH = 0
 
 
