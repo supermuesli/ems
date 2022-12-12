@@ -3,7 +3,10 @@ import sys, pygame, time
 
 
 # window context
-windowSize = windowWidth, windowHeight = 2100, 1300
+pygame.init()
+font = pygame.font.SysFont(None, 64)
+displayInfo = pygame.display.Info()
+windowSize = windowWidth, windowHeight = displayInfo.current_w, displayInfo.current_h
 borderWidth = 10
 screen = pygame.display.set_mode(windowSize)
 
@@ -281,9 +284,6 @@ def renderComponentDependencies(grid):
 
 
 def render(grid: Grid):
-    pygame.init()
-    font = pygame.font.SysFont(None, 64)
-    
     # get grid component rectangles
     providerRects, userRects, storageRects, p2xRects = getRenderRects(grid)
 
