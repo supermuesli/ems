@@ -1,4 +1,4 @@
-.PHONY: deps test run
+.PHONY: deps test run docs
 .DEFAULT_GOAL:= run
 
 deps:
@@ -7,6 +7,9 @@ deps:
 test:
 	python3 -m pytest
 
-run: test
+run: test docs
 	python3 main.py
 
+docs:
+	python3 -m pydoc -w grid render
+	mv grid.html render.html docs/

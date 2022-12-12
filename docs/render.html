@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module render</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>render</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/lolpop/python/next-kraftwerke/render.py">/home/lolpop/python/next-kraftwerke/render.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="pygame.html">pygame</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-getGridColor"><strong>getGridColor</strong></a>(grid: grid.Grid, x: int, y: int) -&gt; tuple</dt><dd><tt>#&nbsp;get&nbsp;grid&nbsp;color&nbsp;based&nbsp;on&nbsp;satisfaction&nbsp;of&nbsp;component&nbsp;that&nbsp;resides&nbsp;on&nbsp;the&nbsp;given&nbsp;coordiantes</tt></dd></dl>
+ <dl><dt><a name="-getGridPosition"><strong>getGridPosition</strong></a>(cellSize: int, x: float, y: float) -&gt; (&lt;class 'int'&gt;, &lt;class 'int'&gt;)</dt><dd><tt>#&nbsp;converts&nbsp;a&nbsp;position&nbsp;on&nbsp;the&nbsp;canvas&nbsp;to&nbsp;cell&nbsp;position&nbsp;on&nbsp;the&nbsp;grid</tt></dd></dl>
+ <dl><dt><a name="-getRenderPosition"><strong>getRenderPosition</strong></a>(cellSize: int, x: int, y: int) -&gt; (&lt;class 'int'&gt;, &lt;class 'int'&gt;)</dt><dd><tt>#&nbsp;converts&nbsp;a&nbsp;cell&nbsp;position&nbsp;on&nbsp;the&nbsp;grid&nbsp;to&nbsp;a&nbsp;position&nbsp;on&nbsp;the&nbsp;canvas</tt></dd></dl>
+ <dl><dt><a name="-getRenderRects"><strong>getRenderRects</strong></a>(grid: grid.Grid)</dt></dl>
+ <dl><dt><a name="-handleEvents"><strong>handleEvents</strong></a>(font, grid: grid.Grid)</dt></dl>
+ <dl><dt><a name="-handleKeyPress"><strong>handleKeyPress</strong></a>(font, grid: grid.Grid, event)</dt></dl>
+ <dl><dt><a name="-handleMouseClick"><strong>handleMouseClick</strong></a>(grid: grid.Grid, event)</dt></dl>
+ <dl><dt><a name="-handleWindowClose"><strong>handleWindowClose</strong></a>(event)</dt></dl>
+ <dl><dt><a name="-render"><strong>render</strong></a>(grid: grid.Grid)</dt></dl>
+ <dl><dt><a name="-renderComponentDependencies"><strong>renderComponentDependencies</strong></a>(grid)</dt></dl>
+ <dl><dt><a name="-renderDisplayTime"><strong>renderDisplayTime</strong></a>(font, displayTime)</dt></dl>
+ <dl><dt><a name="-renderEquilibrium"><strong>renderEquilibrium</strong></a>(font, equilibrium: int)</dt></dl>
+ <dl><dt><a name="-renderGridCells"><strong>renderGridCells</strong></a>(grid: grid.Grid)</dt></dl>
+ <dl><dt><a name="-renderGridComponents"><strong>renderGridComponents</strong></a>(grid: grid.Grid, providerRects, userRects, storageRects, p2xRects, font)</dt></dl>
+ <dl><dt><a name="-renderMousePosition"><strong>renderMousePosition</strong></a>(font, cellSize: int)</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>black</strong> = (0, 0, 0)<br>
+<strong>blue</strong> = (255, 0, 255)<br>
+<strong>borderWidth</strong> = 10<br>
+<strong>displayInfo</strong> = &lt;VideoInfo(hw = 0, wm = 1,video_mem = 0
+        ...),
+         current_w = 2160, current_h = 1440
+&gt;
+<br>
+<strong>font</strong> = &lt;pygame.font.Font object&gt;<br>
+<strong>gray</strong> = (100, 100, 100)<br>
+<strong>green</strong> = (0, 255, 0)<br>
+<strong>p2xSprite</strong> = &lt;Surface(200x200x32 SW)&gt;<br>
+<strong>providerSprite</strong> = &lt;Surface(200x200x32 SW)&gt;<br>
+<strong>red</strong> = (255, 0, 0, 255)<br>
+<strong>screen</strong> = &lt;Surface(2160x1440x32 SW)&gt;<br>
+<strong>storageSprite</strong> = &lt;Surface(200x200x32 SW)&gt;<br>
+<strong>userSprite</strong> = &lt;Surface(200x200x32 SW)&gt;<br>
+<strong>white</strong> = (255, 255, 255)<br>
+<strong>windowHeight</strong> = 1440<br>
+<strong>windowSize</strong> = (2160, 1440)<br>
+<strong>windowWidth</strong> = 2160<br>
+<strong>yellow</strong> = (255, 255, 0)</td></tr></table>
+</body></html>

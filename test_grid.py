@@ -1,5 +1,5 @@
 from grid import Grid
-import os, json
+import sys, json
 
 
 def mockGrid() -> Grid:
@@ -9,7 +9,7 @@ def mockGrid() -> Grid:
         gridData = json.load(file)
     except:
         print('could not open ' + filePath)
-        os.exit(1)
+        sys.exit(1)
 
     filePath = 'assets/settings/scenario.json'
     try:
@@ -17,7 +17,7 @@ def mockGrid() -> Grid:
         scenario = json.load(file)
     except:
         print('could not open ' + filePath)
-        os.exit(1)
+        sys.exit(1)
 
     return Grid(gridData=gridData, gridSize=15, scenario=scenario)
 

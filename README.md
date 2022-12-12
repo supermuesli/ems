@@ -19,6 +19,9 @@ The grid dictates which components are located where on the grid, as well as inf
 
 The scenario dictates which components desire which energy state at which time.
 
+## Documentation
+Use **pydoc** to check out the documentation located at `docs/`.
+
 ## License
 MIT License
 

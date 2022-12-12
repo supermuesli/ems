@@ -17,7 +17,7 @@ gray = (100, 100, 100)
 red = (255, 0, 0, 255)
 yellow = (255, 255, 0)
 green = (0, 255, 0)
-blue = (255, 0, 255)
+purple = (255, 0, 255)
 
 # sprites
 providerSprite = pygame.image.load("assets/images/provider.png")
@@ -276,7 +276,7 @@ def renderComponentDependencies(grid):
             trgX, trgY = grid.getPositionOf(adjacentComponentID)
             pygame.draw.line(
                 screen, 
-                blue, 
+                purple, 
                 getRenderPosition(grid.cellSize, srcX+0.5, srcY+0.5), 
                 getRenderPosition(grid.cellSize, trgX+0.5, trgY+0.5), 
                 borderWidth
