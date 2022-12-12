@@ -84,6 +84,10 @@ class Grid:
         # size of the square grid
         self.gridSize = gridSize
 
+        # TODO the farther two cells are apart from each other, the less energy will arive on consumption since energy
+        # is lost on the way in the form of heat
+        self.energyLossPerCell = 0.98
+
         # timestepSize in seconds corresponds to 15 elapsed simulation minutes
         self.timestepSize = timestepSize 
 
@@ -307,7 +311,7 @@ class Grid:
 
 
     # given an active cells position, get all the other surrounding active cells that belong to the same group
-    def getActiveNeighbourCells(self, x: int, y: int, visited=[]) -> list:
+    def getCellSubgroup(self, x: int, y: int, visited=[]) -> list:
         group = []
 
         if (x,y) in visited:
@@ -315,24 +319,24 @@ class Grid:
 
         if self.cells[x][y]:
             group.append((x, y))
-            # check left
-            if y > 0:
-                for pos in self.getActiveNeighbourCells(x, y-1, visited+group):
-                    group.append(pos)
-
-            # check right
-            if y < len(self.cells[x]):
-                for pos in self.getActiveNeighbourCells(x, y+1, visited+group):
-                    group.append(pos)
-
             # check above
+            if y > 0:
+                for pos in self.getCellSubgroup(x, y-1, visited+group):
+                    group.append(pos)
+
+            # check below
+            if y < len(self.cells[x]):
+                for pos in self.getCellSubgroup(x, y+1, visited+group):
+                    group.append(pos)
+
+            # check left
             if x > 0:
-                for pos in self.getActiveNeighbourCells(x-1, y, visited+group):
+                for pos in self.getCellSubgroup(x-1, y, visited+group):
                     group.append(pos)
             
-            # check below
+            # check right
             if x < len(self.cells):
-                for pos in self.getActiveNeighbourCells(x+1, y, visited+group):
+                for pos in self.getCellSubgroup(x+1, y, visited+group):
                     group.append(pos)
 
         return group
@@ -343,7 +347,7 @@ class Grid:
         groups = []
         for y in range(len(self.cells)):
             for x in range(len(self.cells[y])):
-                subGroup = self.getActiveNeighbourCells(x, y)
+                subGroup = self.getCellSubgroup(x, y)
                 if subGroup != []:
                     discardSubGroup = False
                     for pos in subGroup:
@@ -362,19 +366,80 @@ class Grid:
         return groups
 
 
-    # returns the amount of cells between the two given cell positions
-    def getCellDistance(self, x1: int, y1: int, x2: int, y2: int) -> int:
-        return abs((x1 - x2)) + abs((y2 - y1)) 
+    # get the direct active neighbour cells (up, down, left, right) of a given cell position
+    def getDirectNeighbours(self, x: int, y: int) -> list:
+        if not self.cells[x][y]:
+            return []
+        
+        neighbours = []
+        
+        # check above
+        if y > 0:
+            if self.cells[x][y-1]:
+                neighbours.append((x, y-1))
+        
+        # check below
+        if y < self.gridSize:
+            if self.cells[x][y+1]:
+                neighbours.append((x, y+1))
+
+        # check left
+        if x > 0:
+            if self.cells[x-1][y]:
+                neighbours.append((x-1, y))
+        
+        # check right
+        if x < self.gridSize:
+            if self.cells[x+1][y]:
+                neighbours.append((x+1, y))
+
+        return neighbours
 
 
-    # compute the energy flow for the next 15 minutes
+    # returns the amount of active cells between the two given active cell's positions
+    def getCellDistance(self, srcX: int, srcY: int, trgX: int, trgY: int) -> int:
+        # dijkstra algortihm
+        # https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Algorithm
+        
+        # step 1
+        unvisited = self.getCellSubgroup(srcX, srcY)
+        
+        # step 2
+        d = {pos: inf for pos in unvisited}
+        d[(srcX, srcY)] = 0
+        currentNode = (srcX, srcY)
+
+        # step 3
+        while True:
+            neighbours = self.getDirectNeighbours(currentNode[0], currentNode[1])
+            for n in neighbours:
+                if n in unvisited:
+                    if d[currentNode] + 1 < d[n]:
+                        d[n] = d[currentNode] + 1
+
+            # step 4
+            unvisited.remove(currentNode)
+
+            # step 5
+            minTentativeDistance = inf
+            minPos = None
+            for pos in unvisited:
+                if d[pos] < minTentativeDistance:
+                    minTentativeDistance = d[pos]
+                    minPos = pos
+
+            if (trgX, trgY) not in unvisited or minTentativeDistance == inf:
+                return d[(trgX, trgY)]
+
+            # step 6
+            currentNode = minPos
+        
+
+
+    # compute the energy flow for the next timestep
     def step(self):
         # map each component to the component it is going to consume in the next timestep
         # prioritize: providers -> users -> storages -> p2x
-
-        # TODO
-        # - use dijkstra to compute shortest path between two components, since the longer the path,
-        #   the more energy is lost in the form of heat
 
         self.resetDepencencyMap()
         self.updateScenario()
@@ -383,7 +448,7 @@ class Grid:
         subGroups = self.getCellGroups()
         for group in subGroups:
 
-            # first, user get to consume from providers or storages
+            # step 1, users get to consume from providers, then storages
             for u in self.users:
                 if (u.coordX, u.coordY) not in group:
                     continue
@@ -463,7 +528,7 @@ class Grid:
                         if clostestStorage.id_ not in self.dependencyMap[u.id_]:
                             self.dependencyMap[u.id_].append(clostestStorage.id_)
                     
-            # second, storages can consume from providers
+            # step 2, storages can now consume from providers
             for s in self.storages:
                 if (s.coordX, s.coordY) not in group:
                     continue
@@ -507,7 +572,7 @@ class Grid:
                         if clostestProvider.id_ not in self.dependencyMap[s.id_]:
                             self.dependencyMap[s.id_].append(clostestProvider.id_)
 
-        # third, p2x can consume from providers leftovers
+        # step three, p2x's can now consume from the provider's leftovers
         for p2x in self.p2xs:
             if (p2x.coordX, p2x.coordY) not in group:
                 continue

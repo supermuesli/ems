@@ -3,8 +3,6 @@ from render import render
 import json
 
 def main():
-    print("Primitive Energy Management System")
-
     filePath = 'assets/grid.json'
     try:
         file = open(filePath, 'r')
