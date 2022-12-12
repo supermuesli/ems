@@ -3,7 +3,7 @@ import os, json
 
 
 def mockGrid() -> Grid:
-    filePath = 'assets/test_grid.json'
+    filePath = 'assets/settings/test_grid.json'
     try:
         file = open(filePath, 'r')
         gridData = json.load(file)
@@ -11,7 +11,7 @@ def mockGrid() -> Grid:
         print('could not open ' + filePath)
         os.exit(1)
 
-    filePath = 'assets/scenario.json'
+    filePath = 'assets/settings/scenario.json'
     try:
         file = open(filePath, 'r')
         scenario = json.load(file)

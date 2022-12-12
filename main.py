@@ -3,7 +3,7 @@ from render import render
 import json
 
 def main():
-    filePath = 'assets/grid.json'
+    filePath = 'assets/settings/grid.json'
     try:
         file = open(filePath, 'r')
         gridData = json.load(file)
@@ -11,7 +11,7 @@ def main():
         print('could not open ' + filePath)
         os.exit(1)
 
-    filePath = 'assets/scenario.json'
+    filePath = 'assets/settings/scenario.json'
     try:
         file = open(filePath, 'r')
         scenario = json.load(file)
