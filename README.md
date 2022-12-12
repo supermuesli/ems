@@ -2,9 +2,15 @@
 
 EMS is a primitive energy management system simulation that features energy provider, user, storage and P2X (power to x) components. For each component in the grid, the EMS decides which other component to consume in the next timestep by looking at the workload and proximity. 
 
-This EMS delivers a **greedy energy** solution for a function *f* that tries to maximize the workload of each component. The running average workload per timestep in percent - called **equilibrium** - is featured on the middle right corner of the simulation UI. The higher the equilibrium, the better the energy solution for a given scenario.
+This EMS delivers a **greedy energy** solution for a function *f* that tries to maximize the workload of each component. The running average workload per timestep in percent - called **equilibrium** - is featured on the middle right corner of the simulation UI. The higher the equilibrium, the better the energy solution for any scenario.
 
 ![showcase](https://github.com/supermuesli/ems/blob/main/assets/images/showcase.gif)
+
+## Usage
+Run the simulation by executing
+```
+make
+```
 
 ## Controls
 - hit **Arrow Up/Down** to increase or decrease the tickrate
@@ -21,6 +27,9 @@ The scenario dictates which components desire which energy state at which time.
 
 ## Documentation
 Use **pydoc** to check out the documentation located at `docs/`.
+
+## Caveats
+You might have to increase/decrease the `gridSize` in `main.py` depending on your screen resolution.
 
 ## License
 MIT License
