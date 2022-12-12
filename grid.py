@@ -25,7 +25,7 @@ class Provider(GridComponent):
         """
 
         percent = 0
-        if self.currentKWH == 0:
+        if self.maxKWH == 0:
             percent = 100
         else:
             percent = (1 - self.currentKWH/self.maxKWH) * 100
@@ -265,8 +265,8 @@ class Grid:
         currentHour = self.simulationDayTime.strftime("%H:00")
         previousHour = (self.simulationDayTime - datetime.timedelta(hours=1)).strftime("%H:00")
 
-        factorB = int(currentMinute)/60
-        factorA = 1-factorB
+        factorB = 0.5*(int(currentMinute)/60)
+        factorA = 0.5*(1-factorB)
 
         if currentHour in self.scenario:
             for key in self.scenario[currentHour]:
