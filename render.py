@@ -8,7 +8,7 @@ font = pygame.font.SysFont(None, 64)
 displayInfo = pygame.display.Info()
 windowSize = windowWidth, windowHeight = displayInfo.current_w, displayInfo.current_h
 borderWidth = 10
-screen = pygame.display.set_mode(windowSize)
+screen = pygame.display.set_mode(windowSize, pygame.FULLSCREEN)
 
 # colors
 black = (0, 0, 0)
@@ -250,25 +250,25 @@ def renderGridComponents(grid: Grid, providerRects, userRects, storageRects, p2x
         if grid.cells[p.coordX][p.coordY]:
             percentText = font.render('%d%%' % p.getSatisfaction(), True, getGridColor(grid, p.coordX, p.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, p.coordX, p.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/5.7, renderY + grid.cellSize/1.5))
 
     for u in grid.users:
         if grid.cells[u.coordX][u.coordY]:
             percentText = font.render('%d%%' % u.getSatisfaction(), True, getGridColor(grid, u.coordX, u.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, u.coordX, u.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/5.7, renderY + grid.cellSize/1.5))
 
     for s in grid.storages:
         if grid.cells[s.coordX][s.coordY]:
             percentText = font.render('%d%%' % s.getSatisfaction(), True, getGridColor(grid, s.coordX, s.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, s.coordX, s.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/5.7, renderY + grid.cellSize/1.5))
 
     for p in grid.p2xs:
         if grid.cells[p.coordX][p.coordY]:
             percentText = font.render('%d%%' % p.getSatisfaction(), True, getGridColor(grid, p.coordX, p.coordY))
             renderX, renderY = getRenderPosition(grid.cellSize, p.coordX, p.coordY)
-            screen.blit(percentText, (renderX + grid.cellSize/4, renderY + grid.cellSize/1.45))
+            screen.blit(percentText, (renderX + grid.cellSize/5.7, renderY + grid.cellSize/1.5))
 
 
 def renderDisplayTime(font, displayTime):

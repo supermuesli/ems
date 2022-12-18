@@ -7,7 +7,7 @@ deps:
 test:
 	python3 -m pytest
 
-run: test docs
+run: deps test docs
 	python3 main.py
 
 docs:

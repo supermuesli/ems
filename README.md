@@ -29,7 +29,9 @@ The scenario dictates which components desire which energy state at which time.
 Use **pydoc** to check out the documentation located at `docs/`.
 
 ## Caveats
-You might have to increase/decrease the `gridSize` in `main.py` depending on your screen resolution.
+- the PyGame window is optimized for 1920x1080 displays
+  - if your display is smaller than that and it becomes a problem, you need to resize the icon images and adjust the `cellSize` in `assets/settings/grid.json`
+- you might have to increase the `gridSize` in `main.py` if your screen resolution is larger than 1920x1080
 
 ## License
 MIT License
