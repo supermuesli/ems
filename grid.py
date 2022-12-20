@@ -338,6 +338,11 @@ class Grid:
         self.accumulatedEquilibrium += currentAverageEquilibrium
 
 
+    def resetEquilibrium(self) -> None:
+        self.accumulatedEquilibrium = 0
+        self.stepCounter = 1
+        
+
     def getRunningEquilibrium(self) -> float:
         """Returns the running equilibrium. It is a metric that can explain whether the grid distributes its energy optimally among all of its components."""
         return self.accumulatedEquilibrium/self.stepCounter

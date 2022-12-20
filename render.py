@@ -83,12 +83,14 @@ def handleMouseClick(grid: Grid, event):
             pos = pygame.mouse.get_pos()
             x, y = getGridPosition(grid.cellSize, pos[0], pos[1])
             grid.cells[x][y] = True
+            grid.resetEquilibrium()
 
         # right click -> remove cell
         if event.button == 3:
             pos = pygame.mouse.get_pos()
             x, y = getGridPosition(grid.cellSize, pos[0], pos[1])
             grid.cells[x][y] = False
+            grid.resetEquilibrium()
 
 
 def handleKeyPress(font, grid: Grid, event):
