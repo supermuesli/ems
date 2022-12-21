@@ -22,7 +22,7 @@ def main():
         os.exit(1)
 
     # init and render grid
-    g = Grid(gridData=gridData, gridSize=15, scenario=scenario)
+    g = Grid(gridData=gridData, gridSize=20, scenario=scenario)
     render(grid=g)
 
 

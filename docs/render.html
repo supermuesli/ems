@@ -52,9 +52,11 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;position&nbsp;tuple&nbsp;(x,&nbsp;y)&nbsp;in&nbsp;render&nbsp;space</tt></dd></dl>
  <dl><dt><a name="-getRenderRects"><strong>getRenderRects</strong></a>(grid: grid.Grid)</dt></dl>
+ <dl><dt><a name="-getZoomedSpriteSize"><strong>getZoomedSpriteSize</strong></a>(sprite)</dt></dl>
  <dl><dt><a name="-handleEvents"><strong>handleEvents</strong></a>(font, grid: grid.Grid)</dt></dl>
  <dl><dt><a name="-handleKeyPress"><strong>handleKeyPress</strong></a>(font, grid: grid.Grid, event)</dt></dl>
  <dl><dt><a name="-handleMouseClick"><strong>handleMouseClick</strong></a>(grid: grid.Grid, event)</dt></dl>
+ <dl><dt><a name="-handleMouseWheel"><strong>handleMouseWheel</strong></a>(event)</dt></dl>
  <dl><dt><a name="-handleWindowClose"><strong>handleWindowClose</strong></a>(event)</dt></dl>
  <dl><dt><a name="-render"><strong>render</strong></a>(grid: grid.Grid)</dt></dl>
  <dl><dt><a name="-renderComponentDependencies"><strong>renderComponentDependencies</strong></a>(grid)</dt></dl>
@@ -78,6 +80,7 @@ Returns:<br>
 &gt;
 <br>
 <strong>font</strong> = &lt;pygame.font.Font object&gt;<br>
+<strong>fontSize</strong> = 64<br>
 <strong>gray</strong> = (100, 100, 100)<br>
 <strong>green</strong> = (0, 255, 0)<br>
 <strong>p2xSprite</strong> = &lt;Surface(150x150x32 SW)&gt;<br>
@@ -91,5 +94,6 @@ Returns:<br>
 <strong>windowHeight</strong> = 1080<br>
 <strong>windowSize</strong> = (1920, 1080)<br>
 <strong>windowWidth</strong> = 1920<br>
-<strong>yellow</strong> = (255, 255, 0)</td></tr></table>
+<strong>yellow</strong> = (255, 255, 0)<br>
+<strong>zoomFactor</strong> = 1.0</td></tr></table>
 </body></html>

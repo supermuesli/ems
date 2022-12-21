@@ -1,15 +1,20 @@
-.PHONY: deps test run docs
+.PHONY: venv deps test docs run
 .DEFAULT_GOAL:= run
 
-deps:
-	python3 -m pip install -r requirements.txt
+BIN=$(CURDIR)/venv/bin
 
-test:
-	python3 -m pytest
+venv:
+	python3 -m venv $(CURDIR)/venv
 
-run: deps test docs
-	python3 main.py
+deps: venv
+	$(BIN)/python3 -m pip install -r requirements.txt
+
+test: deps
+	$(BIN)/python3 -m pytest
 
 docs:
-	python3 -m pydoc -w grid render
+	$(BIN)/python3 -m pydoc -w grid render
 	mv grid.html render.html docs/
+
+run: test docs
+	$(BIN)/python3 main.py
