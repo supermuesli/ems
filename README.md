@@ -17,6 +17,7 @@ make
 - hit **Space** to pause or resume the simulation
 - hit **Esc** to exit the simulation
 - hit **Left/Right Mouse Click** to add/remove a cell to/from the grid
+- hit **Mouse Wheel Up/Down** to zoom in/out 
 
 ## Settings
 The `assets` directory contains an example of a *grid setting* and a *scenario setting*. 
@@ -30,8 +31,7 @@ Use **pydoc** to check out the documentation located at `docs/`.
 
 ## Caveats
 - the PyGame window is optimized for 1920x1080 displays
-  - if your display is smaller than that and it becomes a problem, you need to resize the icon images and adjust the `cellSize` in `assets/settings/grid.json`
-- you might have to increase the `gridSize` in `main.py` if your screen resolution is larger than 1920x1080
+- you might have to increase the `gridSize` in `main.py` if your screen resolution is larger than 1920x1080 and a default grid of 20x20 is too small
 
 ## License
 MIT License
